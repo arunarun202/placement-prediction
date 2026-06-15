@@ -34,6 +34,9 @@ urlpatterns = [
 
     re_path(r'^oauth/', include('social_django.urls', namespace='social')),
     path("home/",include("Chatbot.urls")),
+
+    # REST API endpoints for React frontend
+    path('api/', include('users.api_urls')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
