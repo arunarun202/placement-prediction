@@ -1,0 +1,931 @@
+
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Database Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --secondary: #FFA500;
+            --light-orange: #FFE5CC;
+            --dark-orange: #E65C00;
+            --light: #FFF5E6;
+            --dark: #2C3E50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #FF6B35, #FF8C00, #FFA500);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .floating-icon {
+            position: fixed;
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.2);
+            z-index: -1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .icon-1 { top: 10%; left: 5%; animation-delay: 0s; }
+        .icon-2 { top: 20%; right: 8%; animation-delay: 1s; }
+        .icon-3 { bottom: 15%; left: 10%; animation-delay: 2s; }
+        .icon-4 { bottom: 25%; right: 5%; animation-delay: 3s; }
+
+        .dashboard-container {
+            max-width: 95%;
+            margin: 20px auto;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .dashboard-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+
+        .dashboard-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 5px solid var(--primary);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .table-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--light-orange);
+            color: var(--primary);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 15px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .data-table th {
+            color: white;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            position: relative;
+            user-select: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .data-table th:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .data-table th i {
+            margin-left: 5px;
+            opacity: 0.7;
+        }
+
+        .data-table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--light-orange);
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table td {
+            padding: 15px;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .label-badge {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .badge-danger {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            gap: 10px;
+        }
+
+        .pagination-btn {
+            background: var(--light-orange);
+            color: var(--primary);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .pagination-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .pagination-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .chart-container h3 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .chart-box {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .export-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-title {
+                font-size: 2rem;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .table-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-table th, .data-table td {
+                padding: 10px 5px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Icons -->
+    <div class="floating-icon icon-1"><i class="fas fa-database"></i></div>
+    <div class="floating-icon icon-2"><i class="fas fa-chart-line"></i></div>
+    <div class="floating-icon icon-3"><i class="fas fa-users"></i></div>
+    <div class="floating-icon icon-4"><i class="fas fa-briefcase"></i></div>
+
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="fas fa-chart-pie"></i> Valid Prediction Database
+            </h1>
+            <p class="dashboard-subtitle">
+                Showing only validated placement predictions (excluding default/empty records)
+            </p>
+            
+            <!-- Statistics Cards -->
+            <div class="stats-container">
+                {% with valid_records=data|length %}
+                {% with positive_count=data|length|default:0 %}
+                {% with negative_count=data|length|default:0 %}
+                <div class="stat-card">
+                    <i class="fas fa-users fa-2x" style="color: var(--primary);"></i>
+                    <div class="stat-value" id="totalRecords">{{ valid_records }}</div>
+                    <div class="stat-label">Valid Records</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-circle fa-2x" style="color: #4CAF50;"></i>
+                    <div class="stat-value" id="positiveCount">
+                        {% with yes_count=0 %}
+                        {% for record in data %}
+                            {% if record.label == 'yes' %}
+                                {% with yes_count=yes_count|add:1 %}
+                                {% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ yes_count }}
+                        {% endwith %}
+                    </div>
+                    <div class="stat-label">Positive Predictions</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-times-circle fa-2x" style="color: #f44336;"></i>
+                    <div class="stat-value" id="negativeCount">
+                        {% with no_count=0 %}
+                        {% for record in data %}
+                            {% if record.label == 'NO' %}
+                                {% with no_count=no_count|add:1 %}
+                                {% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ no_count }}
+                        {% endwith %}
+                    </div>
+                    <div class="stat-label">Negative Predictions</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-percentage fa-2x" style="color: var(--primary);"></i>
+                    <div class="stat-value" id="successRate">
+                        {% if valid_records > 0 %}
+                            {% with yes_count=0 %}
+                            {% for record in data %}
+                                {% if record.label == 'yes' %}
+                                    {% with yes_count=yes_count|add:1 %}
+                                    {% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ yes_count|floatformat:0 }}
+                            {% endwith %}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                    </div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+                {% endwith %}
+                {% endwith %}
+                {% endwith %}
+            </div>
+        </div>
+
+        <!-- Warning Alert for Empty Records -->
+        {% with empty_count=0 %}
+        {% for record in all_data %}
+            {% if not record.label or record.label == '' %}
+                {% with empty_count=empty_count|add:1 %}
+                {% endwith %}
+            {% endif %}
+        {% endfor %}
+        {% if empty_count > 0 %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="
+            background: linear-gradient(135deg, #FFF3CD, #FFEEBA);
+            border-left: 5px solid #FFC107;
+            color: #856404;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        ">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Note:</strong> {{ empty_count }} default/empty records have been filtered out from this view.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Charts Section -->
+        <div class="chart-container">
+            <h3><i class="fas fa-chart-bar"></i> Valid Predictions Analytics</h3>
+            <div class="chart-grid">
+                <div class="chart-box">
+                    <canvas id="predictionChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <canvas id="qualificationChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <canvas id="companyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table Section -->
+        <div class="table-container">
+            <div class="table-header">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search valid records...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="fas fa-layer-group"></i> All Valid
+                    </button>
+                    <button class="filter-btn" data-filter="yes">
+                        <i class="fas fa-check"></i> Positive Only
+                    </button>
+                    <button class="filter-btn" data-filter="no">
+                        <i class="fas fa-times"></i> Negative Only
+                    </button>
+                    <button class="export-btn" onclick="exportToExcel()">
+                        <i class="fas fa-download"></i> Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table" id="predictionTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0)">Age <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(1)">Gender <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(2)">Qualification <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(3)">Year <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(4)">CGPA <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(5)">Job Role <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(6)">PG <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(7)">10th % <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(8)">12th % <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(9)">Salary <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(10)">Soft Skills <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(11)">Internship <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(12)">Experience <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(13)">Rounds <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(14)">Company <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(15)">Result <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTable(16)">Date/Time <i class="fas fa-sort"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in data %}
+                            {% if record.label and record.label.strip %}
+                            <tr data-label="{{ record.label|lower }}">
+                                <td>{{ record.Age }}</td>
+                                <td>
+                                    {% if record.Gender == "1" or record.Gender == 1 %}
+                                        <i class="fas fa-female" style="color: #E91E63;"></i> Female
+                                    {% else %}
+                                        <i class="fas fa-male" style="color: #2196F3;"></i> Male
+                                    {% endif %}
+                                </td>
+                                <td>{{ record.Qualification }}</td>
+                                <td>{{ record.year }}</td>
+                                <td>
+                                    <div class="progress" style="height: 8px; width: 60px; margin: 0 auto;">
+                                        <div class="progress-bar bg-warning" role="progressbar" 
+                                             style="width: {% widthratio record.cgpa 10 100 %}%;" 
+                                             aria-valuenow="{{ record.cgpa }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="10">
+                                        </div>
+                                    </div>
+                                    <small>{{ record.cgpa }}</small>
+                                </td>
+                                <td>{{ record.Job_Role }}</td>
+                                <td>
+                                    {% if record.Post_Graduation == "1" or record.Post_Graduation == 1 %}
+                                        <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+                                    {% else %}
+                                        <i class="fas fa-times-circle" style="color: #f44336;"></i>
+                                    {% endif %}
+                                </td>
+                                <td>{{ record.ten_Percentage }}%</td>
+                                <td>{{ record.twelth_Percentage }}%</td>
+                                <td>₹{{ record.Salary }}</td>
+                                <td>{{ record.Soft_Skills }}</td>
+                                <td>
+                                    {% if record.Internship == "1" or record.Internship == 1 %}
+                                        <span class="badge-success">Yes</span>
+                                    {% else %}
+                                        <span class="badge-danger">No</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if record.Experience == 1 or record.Experience == "1" %}
+                                        <span class="badge-success">Yes</span>
+                                    {% else %}
+                                        <span class="badge-danger">No</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ record.Round }}</td>
+                                <td>{{ record.Company_Name }}</td>
+                                <td>
+                                    {% if record.label == 'yes' %}
+                                        <span class="label-badge badge-success">
+                                            <i class="fas fa-check"></i> YES
+                                        </span>
+                                    {% elif record.label == 'NO' %}
+                                        <span class="label-badge badge-danger">
+                                            <i class="fas fa-times"></i> NO
+                                        </span>
+                                    {% else %}
+                                        <span class="label-badge" style="background: #6c757d;">
+                                            <i class="fas fa-question"></i> {{ record.label }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ record.created_at|date:"d/m/Y H:i" }}</td>
+                            </tr>
+                            {% endif %}
+                        {% empty %}
+                        <tr>
+                            <td colspan="18" class="text-center py-4">
+                                <div class="empty-state">
+                                    <i class="fas fa-database fa-3x mb-3" style="color: #FF6B35;"></i>
+                                    <h4>No Valid Records Found</h4>
+                                    <p class="text-muted">All records have empty or default labels. Submit predictions to see data here.</p>
+                                    <a href="{% url 'Model' %}" class="btn btn-custom mt-2">
+                                        <i class="fas fa-rocket"></i> Make a Prediction
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-container" id="pagination">
+                <!-- Pagination will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Calculate statistics from displayed records
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('#predictionTable tbody tr');
+            let positiveCount = 0;
+            let negativeCount = 0;
+            
+            rows.forEach(row => {
+                const label = row.getAttribute('data-label');
+                if (label === 'yes') positiveCount++;
+                else if (label === 'no') negativeCount++;
+            });
+            
+            const total = rows.length;
+            const successRate = total > 0 ? Math.round((positiveCount / total) * 100) : 0;
+            
+            // Update statistics cards
+            document.getElementById('totalRecords').textContent = total;
+            document.getElementById('positiveCount').textContent = positiveCount;
+            document.getElementById('negativeCount').textContent = negativeCount;
+            document.getElementById('successRate').textContent = successRate + '%';
+            
+            // Initialize charts with valid data
+            initializeCharts(positiveCount, negativeCount);
+            
+            // Initialize pagination
+            initializePagination();
+            
+            // Add search functionality
+            document.getElementById('searchInput').addEventListener('keyup', function() {
+                filterTable(this.value.toLowerCase());
+            });
+            
+            // Add filter functionality
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    filterTableByLabel(filter);
+                });
+            });
+            
+            // Show success message if filtered
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('filtered')) {
+                showNotification('Showing only valid records with prediction results', 'success');
+            }
+        });
+
+        // Initialize charts with valid data
+        function initializeCharts(positiveCount, negativeCount) {
+            // Only initialize charts if we have data
+            if (positiveCount === 0 && negativeCount === 0) {
+                document.querySelectorAll('.chart-box canvas').forEach(canvas => {
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#f8f9fa';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('No data available', canvas.width/2, canvas.height/2);
+                });
+                return;
+            }
+
+            // Prediction Distribution Chart
+            const predictionCtx = document.getElementById('predictionChart').getContext('2d');
+            new Chart(predictionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Positive', 'Negative'],
+                    datasets: [{
+                        data: [positiveCount, negativeCount],
+                        backgroundColor: ['#4CAF50', '#f44336'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Prediction Distribution'
+                        }
+                    }
+                }
+            });
+
+            // Qualification Distribution Chart
+            const qualificationCtx = document.getElementById('qualificationChart').getContext('2d');
+            // Collect qualification data from table
+            const qualificationCounts = {};
+            document.querySelectorAll('#predictionTable tbody tr').forEach(row => {
+                const qual = row.cells[2].textContent.trim();
+                qualificationCounts[qual] = (qualificationCounts[qual] || 0) + 1;
+            });
+
+            new Chart(qualificationCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(qualificationCounts),
+                    datasets: [{
+                        label: 'Number of Students',
+                        data: Object.values(qualificationCounts),
+                        backgroundColor: '#FF6B35',
+                        borderColor: '#E65C00',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Qualification Distribution'
+                        }
+                    }
+                }
+            });
+
+            // Company Distribution Chart
+            const companyCtx = document.getElementById('companyChart').getContext('2d');
+            // Collect company data from table (top 5 companies)
+            const companyCounts = {};
+            document.querySelectorAll('#predictionTable tbody tr').forEach(row => {
+                const company = row.cells[14].textContent.trim();
+                companyCounts[company] = (companyCounts[company] || 0) + 1;
+            });
+
+            // Sort companies by count and take top 5
+            const topCompanies = Object.entries(companyCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            new Chart(companyCtx, {
+                type: 'pie',
+                data: {
+                    labels: topCompanies.map(c => c[0]),
+                    datasets: [{
+                        data: topCompanies.map(c => c[1]),
+                        backgroundColor: [
+                            '#FF6B35',
+                            '#FF8C00',
+                            '#FFA500',
+                            '#FFB74D',
+                            '#FFD180'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Top 5 Companies'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Keep all other JavaScript functions from previous answer
+        // ... (keep the filterTable, sortTable, pagination, export functions) ...
+
+        // Notification function
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 10px;
+                color: white;
+                font-weight: 600;
+                z-index: 1000;
+                animation: fadeIn 0.3s ease-out;
+                background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease-out forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Add CSS for fadeOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; transform: translateX(0); }
+                to { opacity: 0; transform: translateX(20px); }
+            }
+            .empty-state {
+                text-align: center;
+                padding: 40px;
+                color: #666;
+            }
+            .empty-state i {
+                opacity: 0.5;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% endblock content %}

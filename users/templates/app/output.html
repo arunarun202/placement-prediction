@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Prediction Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --secondary: #FFA500;
+            --success: #2E8B57;
+            --danger: #E74C3C;
+            --light: #FFF5E6;
+            --dark: #2C3E50;
+        }
+
+        body {
+            background: linear-gradient(135deg, #FF6B35, #FF8C00, #FFA500);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .result-container {
+            margin: 30px auto;
+            padding: 30px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease-out;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .result-header h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .result-card {
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-card.success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-left: 8px solid var(--success);
+        }
+
+        .result-card.danger {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            border-left: 8px solid var(--danger);
+        }
+
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .chart-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 5px solid var(--primary);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 10px 0;
+        }
+
+        .btn-custom {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 107, 53, 0.4);
+            color: white;
+        }
+
+        .input-summary {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .skill-badge {
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 50px;
+            margin: 3px;
+            display: inline-block;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .skill-badge:hover {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            transform: scale(1.1);
+        }
+
+        .comparison-chart {
+            height: 400px;
+            width: 100%;
+        }
+
+        .radar-chart {
+            height: 350px;
+            width: 100%;
+        }
+
+        .timeline-chart {
+            height: 300px;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .result-header h2 {
+                font-size: 2.2rem;
+            }
+            
+            .chart-container {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container result-container">
+        <!-- Result Header -->
+        <div class="result-header">
+            <h2><i class="fas fa-chart-line"></i> Placement Prediction Analysis</h2>
+            <div class="progress-ring">
+                <svg viewBox="0 0 100 100">
+                   
+                </svg>
+            </div>
+            <h3 class="mb-4">Probability: <span style="color: var(--primary); font-weight: 800;">{{ probability }}%</span></h3>
+        </div>
+
+        <!-- Prediction Result Card -->
+        {% if predict == 'yes' %}
+        <div class="result-card success">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                    <div class="result-icon mb-3">
+                        <i class="fas fa-trophy fa-4x" style="color: var(--success);"></i>
+                    </div>
+                    <h2 class="display-4 fw-bold" style="color: var(--success);">{{ probability }}%</h2>
+                    <p class="text-muted">Success Probability</p>
+                </div>
+                <div class="col-md-9">
+                    <h3 class="mb-3"><i class="fas fa-check-circle me-2"></i>Excellent News!</h3>
+                    <p class="lead">Your profile shows <span class="fw-bold" style="color: var(--success);">strong potential</span> for placement success.</p>
+                    <p>Based on our analysis, your qualifications and skills align well with industry requirements.</p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="result-card danger">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                    <div class="result-icon mb-3">
+                        <i class="fas fa-exclamation-triangle fa-4x" style="color: var(--danger);"></i>
+                    </div>
+                    <h2 class="display-4 fw-bold" style="color: var(--danger);">{{ probability }}%</h2>
+                    <p class="text-muted">Success Probability</p>
+                </div>
+                <div class="col-md-9">
+                    <h3 class="mb-3"><i class="fas fa-lightbulb me-2"></i>Opportunities for Improvement</h3>
+                    <p class="lead">Your current profile shows <span class="fw-bold" style="color: var(--danger);">areas for enhancement</span>.</p>
+                    <p>With focused improvements, you can significantly increase your placement chances.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Input Data Summary -->
+        <div class="input-summary">
+            <h4 class="mb-4"><i class="fas fa-user-circle me-2"></i>Your Profile Summary</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="summary-item">
+                        <span><i class="fas fa-birthday-cake me-2"></i>Age:</span>
+                        <strong>{{ form_data.Age }}</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span><i class="fas fa-venus-mars me-2"></i>Gender:</span>
+                        <strong>{{ form_data.Gender|yesno:"Female,Male" }}</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span><i class="fas fa-graduation-cap me-2"></i>Qualification:</span>
+                        <strong>{% if form_data.Qualification == '0' %}B.TECH
+                               {% elif form_data.Qualification == '1' %}BCA
+                               {% elif form_data.Qualification == '2' %}BE
+                               {% elif form_data.Qualification == '3' %}BSC
+                               {% elif form_data.Qualification == '4' %}DIPLOMA
+                               {% elif form_data.Qualification == '5' %}ITI
+                               {% elif form_data.Qualification == '6' %}M.TECH
+                               {% elif form_data.Qualification == '7' %}MCA
+                               {% else %}MCS{% endif %}</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span><i class="fas fa-calendar me-2"></i>Year:</span>
+                        <strong>{{ form_data.year }}</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span><i class="fas fa-chart-line me-2"></i>CGPA:</span>
+                        <strong>{{ form_data.cgpa }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="summary-item">
+                        <span><i class="fas fa-briefcase me-2"></i>Job Role:</span>
+                        <strong>
+                            {% if form_data.Job_Role == '0' %}Android Studio
+                            {% elif form_data.Job_Role == '1' %}C
+                            {% elif form_data.Job_Role == '2' %}C++
+                            {% elif form_data.Job_Role == '3' %}Data Analytics
+                            {% elif form_data.Job_Role == '4' %}Data Science
+                            {% elif form_data.Job_Role == '5' %}Frontend
+                            {% elif form_data.Job_Role == '6' %}Full Stack
+                            {% elif form_data.Job_Role == '7' %}Java
+                            {% elif form_data.Job_Role == '8' %}Node JS
+                            {% elif form_data.Job_Role == '9' %}Python
+                            {% else %}React{% endif %}
+                        </strong>
+                    </div>
+                    <div class="summary-item">
+                        <span><i class="fas fa-user-graduate me-2"></i>Post Graduation:</span>
+                        <strong>{{ form_data.Post_Graduation|yesno:"Yes,No" }}</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span><i class="fas fa-percentage me-2"></i>10th Percentage:</span>
+                        <strong>{{ form_data.ten_Percentage }}%</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span><i class="fas fa-university me-2"></i>12th Percentage:</span>
+                        <strong>{{ form_data.twelth_Percentage }}%</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span><i class="fas fa-money-bill-wave me-2"></i>Expected Salary:</span>
+                        <strong>₹{{ form_data.Salary }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-graduation-cap fa-2x mb-3" style="color: var(--primary);"></i>
+                <div class="stat-value">{{ prediction_breakdown.academic_score }}%</div>
+                <p>Academic Score</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-tools fa-2x mb-3" style="color: var(--primary);"></i>
+                <div class="stat-value">{{ prediction_breakdown.skill_score }}%</div>
+                <p>Skill Match</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-briefcase fa-2x mb-3" style="color: var(--primary);"></i>
+                <div class="stat-value">{{ prediction_breakdown.experience_score }}%</div>
+                <p>Experience</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-building fa-2x mb-3" style="color: var(--primary);"></i>
+                <div class="stat-value">{{ prediction_breakdown.company_fit }}%</div>
+                <p>Company Fit</p>
+            </div>
+        </div>
+
+        <!-- Radar Chart - Skill Analysis -->
+        <div class="chart-container">
+            <h4 class="mb-4"><i class="fas fa-radar me-2"></i>Skill Competency Analysis</h4>
+            <div class="radar-chart">
+                <canvas id="radarChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Bar Chart - Score Comparison -->
+        <div class="chart-container">
+            <h4 class="mb-4"><i class="fas fa-chart-bar me-2"></i>Score Comparison with Industry Average</h4>
+            <div class="comparison-chart">
+                <canvas id="comparisonChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Pie Chart - Factor Contribution -->
+        <div class="chart-container">
+            <h4 class="mb-4"><i class="fas fa-chart-pie me-2"></i>Factor Contribution to Placement</h4>
+            <div class="row">
+                <div class="col-md-8">
+                    <canvas id="factorChart" height="250"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <div class="mt-4">
+                        <h6>Key Factors:</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><span class="skill-badge">Academic Performance</span> 35%</li>
+                            <li class="mb-2"><span class="skill-badge">Technical Skills</span> 25%</li>
+                            <li class="mb-2"><span class="skill-badge">Experience</span> 20%</li>
+                            <li class="mb-2"><span class="skill-badge">Soft Skills</span> 15%</li>
+                            <li class="mb-2"><span class="skill-badge">Other Factors</span> 5%</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline Chart - Improvement Plan -->
+        <div class="chart-container">
+            <h4 class="mb-4"><i class="fas fa-road me-2"></i>Improvement Timeline</h4>
+            <div class="timeline-chart">
+                <canvas id="timelineChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="chart-container">
+            <h4 class="mb-4"><i class="fas fa-bullseye me-2"></i>Personalized Recommendations</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="recommendation-list">
+                        <h6><i class="fas fa-check-circle me-2" style="color: var(--success);"></i>Strengths to Maintain:</h6>
+                        <ul>
+                            <li>Your academic foundation is solid</li>
+                            <li>Good understanding of core concepts</li>
+                            <li>Clear career direction identified</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="recommendation-list">
+                        <h6><i class="fas fa-exclamation-triangle me-2" style="color: var(--danger);"></i>Areas for Improvement:</h6>
+                        <ul>
+                            {% for recommendation in recommendations %}
+                            <li>{{ recommendation }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center mt-5">
+            <a href="{% url 'Model' %}" class="btn btn-custom me-3">
+                <i class="fas fa-redo"></i> Try Another Prediction
+            </a>
+            <button class="btn btn-custom" onclick="downloadReport()">
+                <i class="fas fa-download"></i> Download Report
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Radar Chart
+        const radarCtx = document.getElementById('radarChart').getContext('2d');
+        const radarChart = new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Technical Skills', 'Academic Score', 'Experience', 'Soft Skills', 'Company Fit', 'Interview Readiness'],
+                datasets: [{
+                    label: 'Your Score',
+                    data: [
+                        {{ prediction_breakdown.skill_score }},
+                        {{ prediction_breakdown.academic_score }},
+                        {{ prediction_breakdown.experience_score }},
+                        75, // Soft Skills score
+                        {{ prediction_breakdown.company_fit }},
+                        70  // Interview readiness
+                    ],
+                    backgroundColor: 'rgba(255, 107, 53, 0.2)',
+                    borderColor: 'rgba(255, 107, 53, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(255, 107, 53, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5
+                }, {
+                    label: 'Industry Average',
+                    data: [65, 70, 55, 68, 60, 62],
+                    backgroundColor: 'rgba(100, 100, 100, 0.1)',
+                    borderColor: 'rgba(100, 100, 100, 0.5)',
+                    borderWidth: 1,
+                    pointRadius: 3
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        ticks: {
+                            stepSize: 20
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+
+        // Bar Chart - Comparison
+        const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+        const comparisonChart = new Chart(comparisonCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Academic', 'Technical', 'Experience', 'Soft Skills', 'Overall'],
+                datasets: [{
+                    label: 'Your Score',
+                    data: [
+                        {{ prediction_breakdown.academic_score }},
+                        {{ prediction_breakdown.skill_score }},
+                        {{ prediction_breakdown.experience_score }},
+                        75,
+                        {{ prediction_breakdown.overall_fit }}
+                    ],
+                    backgroundColor: 'rgba(255, 107, 53, 0.7)',
+                    borderColor: 'rgba(255, 107, 53, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Industry Avg',
+                    data: [72, 68, 58, 70, 67],
+                    backgroundColor: 'rgba(100, 100, 100, 0.5)',
+                    borderColor: 'rgba(100, 100, 100, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Score (%)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        // Pie Chart - Factor Contribution
+        const factorCtx = document.getElementById('factorChart').getContext('2d');
+        const factorChart = new Chart(factorCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Academic', 'Technical', 'Experience', 'Soft Skills', 'Other'],
+                datasets: [{
+                    data: [35, 25, 20, 15, 5],
+                    backgroundColor: [
+                        '#FF6B35',
+                        '#FF8C00',
+                        '#FFA500',
+                        '#FFB74D',
+                        '#FFD180'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Timeline Chart
+        const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+        const timelineChart = new Chart(timelineCtx, {
+            type: 'line',
+            data: {
+                labels: ['Now', '1 Month', '2 Months', '3 Months', '4 Months', '5 Months'],
+                datasets: [{
+                    label: 'Projected Growth',
+                    data: [
+                        {{ probability }},
+                        {{ probability|add:10 }},
+                        {{ probability|add:20 }},
+                        {{ probability|add:30 }},
+                        {{ probability|add:40 }},
+                        {{ probability|add:50 }}
+                    ].map(num => Math.min(num, 95)),
+                    borderColor: 'rgba(255, 107, 53, 1)',
+                    backgroundColor: 'rgba(255, 107, 53, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Placement Probability (%)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Timeline'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Download Report function
+        function downloadReport() {
+            const reportData = {
+                prediction: "{{ predict }}",
+                probability: {{ probability }},
+                scores: {
+                    academic: {{ prediction_breakdown.academic_score }},
+                    technical: {{ prediction_breakdown.skill_score }},
+                    experience: {{ prediction_breakdown.experience_score }},
+                    companyFit: {{ prediction_breakdown.company_fit }}
+                },
+                timestamp: new Date().toISOString()
+            };
+            
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(reportData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "placement_report.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            
+            alert('Report downloaded!');
+        }
+
+        // Animate progress ring
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressRing = document.querySelector('.progress-ring-fill');
+            const circumference = 283;
+            const offset = circumference - ({{ probability }} / 100) * circumference;
+            progressRing.style.strokeDashoffset = offset;
+            
+            // Add animation to progress ring
+            progressRing.style.transition = 'stroke-dashoffset 2s ease-in-out';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,672 @@
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformer Model Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff7e00, #ff5500, #ff3c00);
+            background-size: 400% 400%;
+            animation: gradientMove 12s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 126, 0, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 126, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 126, 0, 0); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: #fff8e1;
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .form-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-title {
+            color: #ff6b00;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #ff6b00;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: #ff6b00;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            background-color: #fff;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #ff6b00;
+            box-shadow: 0 0 0 0.25rem rgba(255, 107, 0, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ff6b00;
+            pointer-events: none;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #ff6b00, #ff3c00);
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            color: white;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 40px auto 0;
+            width: 250px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 10px 20px rgba(255, 107, 0, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #ff3c00, #ff6b00);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 25px rgba(255, 107, 0, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .floating-icon {
+            position: fixed;
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.3);
+            z-index: -1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .icon-1 { top: 10%; left: 5%; animation-delay: 0s; }
+        .icon-2 { top: 20%; right: 8%; animation-delay: 1s; }
+        .icon-3 { bottom: 15%; left: 10%; animation-delay: 2s; }
+        .icon-4 { bottom: 25%; right: 5%; animation-delay: 3s; }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-card h5 {
+            color: white;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: #fff8e1;
+            font-size: 0.9rem;
+        }
+
+        .progress-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            border-radius: 25px 25px 0 0;
+            background: linear-gradient(90deg, #ff6b00, #ff3c00);
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+            
+            .row {
+                grid-template-columns: 1fr;
+            }
+            
+            .submit-btn {
+                width: 100%;
+            }
+        }
+
+        /* Loading animation for form submission */
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff6b00;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Tooltip styling */
+        .tooltip-icon {
+            color: #ff6b00;
+            cursor: help;
+            margin-left: 5px;
+        }
+
+        /* Form validation styling */
+        .form-control:valid {
+            border-color: #28a745;
+        }
+
+        .form-control:invalid:not(:placeholder-shown) {
+            border-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating background icons -->
+    <div class="floating-icon icon-1"><i class="fas fa-graduation-cap"></i></div>
+    <div class="floating-icon icon-2"><i class="fas fa-briefcase"></i></div>
+    <div class="floating-icon icon-3"><i class="fas fa-chart-line"></i></div>
+    <div class="floating-icon icon-4"><i class="fas fa-university"></i></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title">
+                <i class="fas fa-robot"></i> Placement Prediction
+            </h1>
+            <p class="subtitle">AI-powered career placement prediction system</p>
+            
+            <!-- Feature Cards -->
+            
+        </div>
+
+        <!-- Main Form -->
+        <form id="predictionForm" method="post" action="{% url 'Model' %}">
+            {% csrf_token %}
+            <div class="form-container">
+                <div class="progress-ring"></div>
+                
+                <h3 class="section-title">
+                    <i class="fas fa-user-graduate"></i> Candidate Information
+                </h3>
+                
+                <div class="row">
+                    <!-- Personal Information -->
+                    <div class="form-group">
+                        <label for="Age" class="form-label">
+                            <i class="fas fa-birthday-cake"></i> Age
+                        </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="Age" name="Age" min="18"  required>
+                            <span class="input-icon"><i class="fas fa-user"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Gender" class="form-label">
+                            <i class="fas fa-venus-mars"></i> Gender
+                        </label>
+                        <select name="Gender" id="gender" class="form-select" required>
+                            <option value="" disabled selected>Select Gender</option>
+                            <option value="0">Male</option>
+                            <option value="1">Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Qualification" class="form-label">
+                            <i class="fas fa-graduation-cap"></i> Qualification
+                        </label>
+                        <select name="Qualification" id="Qualification" class="form-select" required>
+                            <option value="" disabled selected>Select Qualification</option>
+                            <option value="0">B.TECH</option>
+                            <option value="1">BCA</option>
+                            <option value="2">BE</option>
+                            <option value="3">BSC</option>
+                            <option value="4">DIPLAMO</option>
+                            <option value="5">ITI</option>
+                            <option value="6">M.TECH</option>
+                            <option value="7">MCA</option>
+                            <option value="8">MCS</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="year" class="form-label">
+                            <i class="fas fa-calendar-alt"></i> Year
+                        </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="year" name="year" min="2010" max="2080" required>
+                            <span class="input-icon"><i class="fas fa-calendar"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cgpa" class="form-label">
+                            <i class="fas fa-chart-bar"></i> CGPA
+                        </label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="cgpa" name="cgpa" placeholder="0.0 - 10.0" required>
+                            <span class="input-icon"><i class="fas fa-percentage"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Post_Graduation" class="form-label">
+                            <i class="fas fa-user-graduate"></i> Post Graduation
+                        </label>
+                        <select name="Post_Graduation" id="Post_Graduation" class="form-select" required>
+                            <option value="" disabled selected>Select Post Graduation</option>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ten_Percentage" class="form-label">
+                            <i class="fas fa-school"></i> 10th Percentage
+                        </label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ten_Percentage" name="ten_Percentage" placeholder="0% - 100%" required>
+                            <span class="input-icon"><i class="fas fa-percent"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="twelth_Percentage" class="form-label">
+                            <i class="fas fa-university"></i> 12th Percentage
+                        </label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="twelth_Percentage" name="twelth_Percentage" placeholder="0% - 100%" required>
+                            <span class="input-icon"><i class="fas fa-percent"></i></span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="section-title mt-5">
+                    <i class="fas fa-briefcase"></i> Career Information
+                </h3>
+
+                <div class="row">
+                    <!-- Career Information -->
+                    <div class="form-group">
+                        <label for="Job_Role" class="form-label">
+                            <i class="fas fa-code"></i> Job Role
+                        </label>
+                        <select name="Job_Role" id="Job_Role" class="form-select" required>
+                            <option value="" disabled selected>Select Job Role</option>
+                            <option value="0">android studio</option>
+                            <option value="1">C</option>
+                            <option value="2">c++</option>
+                            <option value="3">data analytics</option>
+                            <option value="4">data science</option>
+                            <option value="5">frontend</option>
+                            <option value="6">Full Stack</option>
+                            <option value="7">java</option>
+                            <option value="8">node js</option>
+                            <option value="9">python</option>
+                            <option value="10">React</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Salary" class="form-label">
+                            <i class="fas fa-money-bill-wave"></i> Expected Salary (₹)
+                        </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="Salary" name="Salary" min="0" required>
+                            <span class="input-icon"><i class="fas fa-rupee-sign"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Soft_Skills" class="form-label">
+                            <i class="fas fa-comments"></i> Soft Skills
+                        </label>
+                        <select name="Soft_Skills" id="Soft_Skills" class="form-select" required>
+                            <option value="" disabled selected>Select Soft Skills</option>
+                            <option value="0">Adaptability</option>
+                            <option value="1">Communication Skills</option>
+                            <option value="2">Emotional Intelligence</option>
+                            <option value="3">data</option>
+                            <option value="4">Leadership</option>
+                            <option value="5">Problem-Solving</option>
+                            <option value="6">Teamwork</option>
+                            <option value="7">Time Management</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Internship" class="form-label">
+                            <i class="fas fa-briefcase"></i> Internship
+                        </label>
+                        <select name="Internship" id="Internship" class="form-select" required>
+                            <option value="" disabled selected>Select Internship</option>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Experience" class="form-label">
+                            <i class="fas fa-history"></i> Experience
+                        </label>
+                        <select name="Experience" id="Experience" class="form-select" required>
+                            <option value="" disabled selected>Select Experience</option>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Round" class="form-label">
+                            <i class="fas fa-layer-group"></i> Interview Rounds
+                        </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="Round" name="Round" min="1" max="10" required>
+                            <span class="input-icon"><i class="fas fa-list-ol"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Company_Name" class="form-label">
+                            <i class="fas fa-building"></i> Company Name
+                        </label>
+                        <select name="Company_Name" id="Company_Name" class="form-select" required>
+                            <option value="" disabled selected>Select Company</option>
+                            <option value="0">Accenture India</option>
+                            <option value="1">Amazon India</option>
+                            <option value="2">Amul</option>
+                            <option value="3">Asian Paints</option>
+                            <option value="4">Axis Bank</option>
+                            <option value="5">Bajaj Finserv</option>
+                            <option value="6">BigBasket</option>
+                            <option value="7">Bosch India</option>
+                            <option value="8">Byju's</option>
+                            <option value="9">Capgemini</option>
+                            <option value="10">Cognizant</option>
+                            <option value="11">CureFit</option>
+                            <option value="12">Dabur</option>
+                            <option value="13">Delhivery</option>
+                            <option value="14">Flipkart</option>
+                            <option value="15">Freshworks</option>
+                            <option value="16">Godrej</option>
+                            <option value="17">Havells</option>
+                            <option value="18">HCL Technologies</option>
+                            <option value="19">HDFC Bank</option>
+                            <option value="20">Hero MotoCorp</option>
+                            <option value="21">ICICI Bank</option>
+                            <option value="22">Infosys</option>
+                            <option value="23">ITC Limited</option>
+                            <option value="24">Kotak Mahindra Bank</option>
+                            <option value="25">L&T Infotech</option>
+                            <option value="26">Mahindra & Mahindra</option>
+                            <option value="27">MakeMyTrip</option>
+                            <option value="28">Marico</option>
+                            <option value="29">Mindtree</option>
+                            <option value="30">Myntra</option>
+                            <option value="31">Ola Cabs</option>
+                            <option value="32">Oracle India</option>
+                            <option value="33">Paytm</option>
+                            <option value="34">PhonePe</option>
+                            <option value="35">Project center</option>
+                            <option value="36">RedBus</option>
+                            <option value="37">Reliance Jio</option>
+                            <option value="38">Siemens India</option>
+                            <option value="39">Snapdeal</option>
+                            <option value="40">State Bank of India</option>
+                            <option value="41">Swiggy</option>
+                            <option value="42">Tata Motors</option>
+                            <option value="43">TCS</option>
+                            <option value="44">Tech Mahindra</option>
+                            <option value="45">TVS Motors</option>
+                            <option value="46">UrbanClap</option>
+                            <option value="47">Wipro</option>
+                            <option value="48">Zoho</option>
+                            <option value="49">Zomato</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Loading animation -->
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p class="mt-3" style="color: #ff6b00; font-weight: 600;">Analyzing your profile...</p>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn submit-btn">
+                    <i class="fas fa-rocket"></i> PREDICT PLACEMENT
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Form submission loading indicator
+        document.getElementById('predictionForm').addEventListener('submit', function(e) {
+            const submitBtn = document.querySelector('.submit-btn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            
+            // Change button text and show loading
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSING...';
+            submitBtn.disabled = true;
+            loadingIndicator.style.display = 'block';
+            
+            // Add a small delay for better UX
+            setTimeout(() => {
+                // Form will submit normally after this
+            }, 500);
+        });
+
+        // Add input validation hints
+        document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            element.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+            
+            // Add tooltip functionality
+            if (element.hasAttribute('required')) {
+                element.addEventListener('invalid', function() {
+                    this.style.borderColor = '#dc3545';
+                    this.style.animation = 'shake 0.5s';
+                    
+                    setTimeout(() => {
+                        this.style.animation = '';
+                    }, 500);
+                });
+                
+                element.addEventListener('input', function() {
+                    if (this.checkValidity()) {
+                        this.style.borderColor = '#28a745';
+                    }
+                });
+            }
+        });
+
+        // Add shake animation for invalid inputs
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add floating effect to form on scroll
+        window.addEventListener('scroll', function() {
+            const formContainer = document.querySelector('.form-container');
+            const scrollPosition = window.pageYOffset;
+            
+            formContainer.style.transform = `translateY(${scrollPosition * 0.02}px)`;
+        });
+
+        // Random floating effect for background icons
+        document.querySelectorAll('.floating-icon').forEach(icon => {
+            const randomX = Math.random() * 20 - 10;
+            const randomY = Math.random() * 20 - 10;
+            icon.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        });
+
+        // Real-time character count for percentage fields
+        document.getElementById('cgpa').addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            if (value > 10) {
+                this.value = 10;
+            } else if (value < 0) {
+                this.value = 0;
+            }
+        });
+
+        document.getElementById('ten_Percentage').addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            if (value > 100) {
+                this.value = 100;
+            } else if (value < 0) {
+                this.value = 0;
+            }
+        });
+
+        document.getElementById('twelth_Percentage').addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            if (value > 100) {
+                this.value = 100;
+            } else if (value < 0) {
+                this.value = 0;
+            }
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

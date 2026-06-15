@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Database Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --secondary: #FFA500;
+            --accent: #FF4500;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --danger: #FF5252;
+            --dark: #2C3E50;
+            --light: #FFF5E6;
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #FF6B35, #FF8C00, #FFA500);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .floating-icon {
+            position: fixed;
+            font-size: 2.5rem;
+            color: rgba(255, 255, 255, 0.15);
+            z-index: -1;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .icon-1 { top: 10%; left: 5%; animation-delay: 0s; }
+        .icon-2 { top: 20%; right: 8%; animation-delay: 1s; }
+        .icon-3 { bottom: 15%; left: 10%; animation-delay: 2s; }
+        .icon-4 { bottom: 25%; right: 5%; animation-delay: 3s; }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .dashboard-header {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-left h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+
+        .header-left p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 600px;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 30px;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 107, 53, 0.4);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 6px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 165, 0, 0.1));
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 10px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .resume-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .resume-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            animation: slideIn 0.6s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .resume-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 25px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .resume-card:hover .card-header::before {
+            transform: translateX(100%);
+        }
+
+        .candidate-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .candidate-email {
+            opacity: 0.9;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-value {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .ats-score-container {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 165, 0, 0.1));
+            padding: 15px;
+            border-radius: 15px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ats-score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .ats-score-label {
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ats-score-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .score-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            width: 0;
+            transition: width 1.5s ease-in-out;
+        }
+
+        .analysis-section {
+            margin-top: 20px;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .strength-list, .weakness-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .strength-list li, .weakness-list li {
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-list li {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2E7D32;
+        }
+
+        .weakness-list li {
+            background: rgba(255, 82, 82, 0.1);
+            color: #C62828;
+        }
+
+        .strength-list li:hover, .weakness-list li:hover {
+            transform: translateX(5px);
+        }
+
+        .suggestions-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .suggestions-list li {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: rgba(33, 150, 243, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+            transition: all 0.3s ease;
+        }
+
+        .suggestions-list li:hover {
+            transform: translateX(5px);
+            background: rgba(33, 150, 243, 0.2);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, var(--danger), #FF8A80);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 80px 40px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-out;
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            color: var(--primary);
+            margin-bottom: 30px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .empty-message {
+            color: #666;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .resume-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-header {
+                padding: 30px 20px;
+            }
+            
+            .header-left h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(var(--secondary), var(--primary));
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Icons -->
+    <div class="floating-icon icon-1"><i class="fas fa-file-alt"></i></div>
+    <div class="floating-icon icon-2"><i class="fas fa-graduation-cap"></i></div>
+    <div class="floating-icon icon-3"><i class="fas fa-briefcase"></i></div>
+    <div class="floating-icon icon-4"><i class="fas fa-chart-line"></i></div>
+
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1><i class="fas fa-database"></i> Resume Analytics Dashboard</h1>
+                    <p>AI-powered resume analysis and insights. Track ATS scores, strengths, weaknesses, and improvement suggestions.</p>
+                </div>
+                <a href="{% url 'upload_resume' %}" class="upload-btn">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    Upload New Resume
+                </a>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <div class="stat-value">{{ resumes|length }}</div>
+                <div class="stat-label">Total Resumes</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-value" id="avgScore">0</div>
+                <div class="stat-label">Average ATS Score</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-value" id="highScore">0</div>
+                <div class="stat-label">Highest Score</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-value" id="recentUploads">0</div>
+                <div class="stat-label">Recent Uploads (7d)</div>
+            </div>
+        </div>
+
+       
+
+        <!-- Resume Cards Grid -->
+        <div class="resume-grid">
+            {% for resume in resumes %}
+            <div class="resume-card" data-score="{{ resume.ats_score|default:0 }}">
+                <div class="card-header">
+                    <h3 class="candidate-name">
+                        <i class="fas fa-user-circle"></i>
+                        {{ resume.name|default:"Unknown Candidate" }}
+                    </h3>
+                    {% if resume.email %}
+                    <div class="candidate-email">
+                        <i class="fas fa-envelope"></i>
+                        {{ resume.email }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="card-body">
+                    <!-- Upload Info -->
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            Uploaded
+                        </span>
+                        <span class="info-value">
+                            {{ resume.uploaded_at|date:"M d, Y" }}
+                        </span>
+                    </div>
+
+                    <!-- ATS Score -->
+                    {% if resume.ats_score %}
+                    <div class="ats-score-container">
+                        <div class="ats-score-header">
+                            <span class="ats-score-label">
+                                <i class="fas fa-chart-line"></i>
+                                ATS Score
+                            </span>
+                            <span class="ats-score-value">{{ resume.ats_score }}</span>
+                        </div>
+                        <div class="score-bar">
+                            <div class="score-fill" style="width: {{ resume.ats_score }}%"></div>
+                        </div>
+                        <div style="text-align: center; margin-top: 10px; font-size: 0.9rem; color: #666;">
+                            {% if resume.ats_score >= 80 %}
+                            <span style="color: #4CAF50;"><i class="fas fa-check-circle"></i> Excellent</span>
+                            {% elif resume.ats_score >= 60 %}
+                            <span style="color: #FFC107;"><i class="fas fa-exclamation-circle"></i> Good</span>
+                            {% else %}
+                            <span style="color: #FF5252;"><i class="fas fa-times-circle"></i> Needs Improvement</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Strengths -->
+                    {% if resume.gemini_response and resume.gemini_response.strengths %}
+                    <div class="analysis-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+                            Strengths
+                        </h4>
+                        <ul class="strength-list">
+                            {% for strength in resume.gemini_response.strengths|slice:":3" %}
+                            <li>
+                                <i class="fas fa-check" style="color: #4CAF50;"></i>
+                                {{ strength }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <!-- Weaknesses -->
+                    {% if resume.gemini_response and resume.gemini_response.weaknesses %}
+                    <div class="analysis-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-exclamation-triangle" style="color: #FF5252;"></i>
+                            Areas for Improvement
+                        </h4>
+                        <ul class="weakness-list">
+                            {% for weakness in resume.gemini_response.weaknesses|slice:":3" %}
+                            <li>
+                                <i class="fas fa-exclamation" style="color: #FF5252;"></i>
+                                {{ weakness }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <!-- Suggestions -->
+                    {% if resume.suggestions %}
+                    <div class="analysis-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-lightbulb" style="color: #2196F3;"></i>
+                            Key Suggestions
+                        </h4>
+                        <ul class="suggestions-list">
+                            {% for sug in resume.suggestions.splitlines|slice:":2" %}
+                            <li>{{ sug }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <a href="{{ resume.file.url }}" download class="action-btn download-btn">
+                            <i class="fas fa-download"></i>
+                            Download
+                        </a>
+                        <a href="{% url 'delete_resume' resume.id %}" 
+                           onclick="return confirmDelete('{{ resume.name|default:"this resume" }}')" 
+                           class="action-btn delete-btn">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-file-upload"></i>
+                </div>
+                <h2 class="empty-title">No Resumes Uploaded</h2>
+                <p class="empty-message">
+                    Start by uploading your first resume to get AI-powered analysis, 
+                    ATS score evaluation, and personalized improvement suggestions.
+                </p>
+                <a href="#" class="upload-btn" style="display: inline-flex;">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    Upload Your First Resume
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Calculate and display statistics
+        document.addEventListener('DOMContentLoaded', function() {
+            const resumeCards = document.querySelectorAll('.resume-card[data-score]');
+            let totalScore = 0;
+            let highScore = 0;
+            let recentCount = 0;
+            
+            // Get current date
+            const currentDate = new Date();
+            const sevenDaysAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+            
+            resumeCards.forEach(card => {
+                const score = parseInt(card.getAttribute('data-score'));
+                totalScore += score;
+                highScore = Math.max(highScore, score);
+                
+                // Check if uploaded recently (within 7 days)
+                const uploadedDate = card.querySelector('.info-value')?.textContent;
+                if (uploadedDate) {
+                    // Parse date (assuming format like "Dec 15, 2023")
+                    const uploadDate = new Date(uploadedDate);
+                    if (uploadDate >= sevenDaysAgo) {
+                        recentCount++;
+                    }
+                }
+            });
+            
+            const avgScore = resumeCards.length > 0 ? Math.round(totalScore / resumeCards.length) : 0;
+            
+            // Update statistics
+            document.getElementById('avgScore').textContent = avgScore;
+            document.getElementById('highScore').textContent = highScore;
+            document.getElementById('recentUploads').textContent = recentCount;
+            
+            // Initialize score bars animation
+            document.querySelectorAll('.score-fill').forEach(fill => {
+                const width = fill.style.width;
+                fill.style.width = '0';
+                setTimeout(() => {
+                    fill.style.width = width;
+                }, 300);
+            });
+            
+            // Initialize charts if we have data
+            if (resumeCards.length > 0) {
+                initializeCharts(resumeCards);
+            }
+        });
+
+        // Initialize Charts
+        function initializeCharts(resumeCards) {
+            // Score Distribution Chart
+            const scoreCtx = document.getElementById('scoreChart').getContext('2d');
+            
+            // Categorize scores
+            const scoreRanges = {
+                excellent: 0, // 80-100
+                good: 0,      // 60-79
+                average: 0,   // 40-59
+                poor: 0       // 0-39
+            };
+            
+            resumeCards.forEach(card => {
+                const score = parseInt(card.getAttribute('data-score'));
+                if (score >= 80) scoreRanges.excellent++;
+                else if (score >= 60) scoreRanges.good++;
+                else if (score >= 40) scoreRanges.average++;
+                else scoreRanges.poor++;
+            });
+            
+            new Chart(scoreCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Poor (0-39)', 'Average (40-59)', 'Good (60-79)', 'Excellent (80-100)'],
+                    datasets: [{
+                        label: 'Number of Resumes',
+                        data: [scoreRanges.poor, scoreRanges.average, scoreRanges.good, scoreRanges.excellent],
+                        backgroundColor: [
+                            '#FF5252',
+                            '#FFC107',
+                            '#4CAF50',
+                            '#2196F3'
+                        ],
+                        borderColor: [
+                            '#FF1744',
+                            '#FF9800',
+                            '#2E7D32',
+                            '#1565C0'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'ATS Score Distribution',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            color: '#2C3E50'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Category Analysis Chart
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            
+            // Simulated category data (you should replace with actual data)
+            const categoryData = {
+                'Formatting': 45,
+                'Keywords': 35,
+                'Experience': 60,
+                'Education': 75,
+                'Skills': 50
+            };
+            
+            new Chart(categoryCtx, {
+                type: 'radar',
+                data: {
+                    labels: Object.keys(categoryData),
+                    datasets: [{
+                        label: 'Average Score per Category',
+                        data: Object.values(categoryData),
+                        backgroundColor: 'rgba(255, 107, 53, 0.2)',
+                        borderColor: '#FF6B35',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#FF6B35',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(0,0,0,0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                },
+                                color: '#2C3E50'
+                            },
+                            ticks: {
+                                backdropColor: 'transparent',
+                                stepSize: 20,
+                                max: 100
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Category Analysis',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            color: '#2C3E50'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Delete confirmation
+        function confirmDelete(resumeName) {
+            return confirm(`Are you sure you want to delete ${resumeName}? This action cannot be undone.`);
+        }
+
+        // Add hover effects to cards
+        document.querySelectorAll('.resume-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.zIndex = '100';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.zIndex = '1';
+            });
+        });
+
+        // Add click animation to action buttons
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (this.classList.contains('delete-btn')) {
+                    if (!confirmDelete(this.closest('.resume-card').querySelector('.candidate-name').textContent.trim())) {
+                        e.preventDefault();
+                        return;
+                    }
+                }
+                
+                // Add ripple effect
+                createRippleEffect(this, e);
+            });
+        });
+
+        // Ripple effect function
+        function createRippleEffect(element, event) {
+            const ripple = document.createElement('span');
+            const rect = element.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                pointer-events: none;
+            `;
+            
+            element.style.position = 'relative';
+            element.style.overflow = 'hidden';
+            element.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        // Add CSS for ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Filter functionality (can be enhanced)
+        function filterResumes(minScore) {
+            const cards = document.querySelectorAll('.resume-card');
+            cards.forEach(card => {
+                const score = parseInt(card.getAttribute('data-score'));
+                if (score >= minScore) {
+                    card.style.display = 'block';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 300);
+                }
+            });
+        }
+
+        // Search functionality (placeholder - can be implemented with backend)
+        function searchResumes(query) {
+            // Implementation would depend on your backend setup
+            console.log('Searching for:', query);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Placement</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/animate.css">
+    
+    <link rel="stylesheet" href="/static/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/static/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/static/css/magnific-popup.css">
+
+    <link rel="stylesheet" href="/static/css/aos.css">
+
+    <link rel="stylesheet" href="/static/css/ionicons.min.css">
+    
+    <link rel="stylesheet" href="/static/css/flaticon.css">
+    <link rel="stylesheet" href="/static/css/icomoon.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+  </head>
+  <body>
+	  <div class="bg-top navbar-light">
+    	<div class="container">
+    		
+		  </div>
+    </div>
+	       {% if user.is_authenticated %}
+	  <nav class="navbar navbar-expand-lg navbar-dark bg-dark ftco-navbar-light" id="ftco-navbar">
+	    <div class="container d-flex align-items-center px-4">
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="oi oi-menu"></span> Menu
+	      </button>
+	      <form action="#" class="searchform order-lg-last">
+          <div class="form-group d-flex">
+            <input type="text" class="form-control pl-3" placeholder="Search">
+            <button type="submit" placeholder="" class="form-control search"><span class="ion-ios-search"></span></button>
+          </div>
+        </form>
+	      <div class="collapse navbar-collapse" id="ftco-nav">
+	        <ul class="navbar-nav mr-auto">
+				  
+	        	<li class="nav-item active"><a href="{% url 'users-home' %}" class="nav-link pl-0">Home</a></li>
+	        	<li class="nav-item"><a href="{% url 'users-profile' %}" class="nav-link">Profile</a></li>
+	        	<li class="nav-item"><a href="{% url 'Model' %}" class="nav-link">Model</a></li>
+	        	<li class="nav-item"><a href="{% url 'Database' %}" class="nav-link">Database</a></li>
+	        	<li class="nav-item"><a href="{% url 'upload_resume' %}" class="nav-link">Upload Resume</a></li>
+				<li class="nav-item"><a href="{% url 'resume_list' %}" class="nav-link">Resume List</a></li>
+				<li class="nav-item active"><a href="{% url 'logout_view' %}" class="nav-link pl-0">Logout</a></li>
+
+			
+	          
+			   
+	        </ul>
+	      </div>
+	    </div>
+	  </nav>
+	  {% endif %}
+    <!-- END nav -->
+    
+    <section class="home-slider owl-carousel">
+      <div class="slider-item" style="background-image:url(/static/images/bg_1.jpg);">
+      	<div class="overlay"></div>
+        <div class="container">
+          <div class="row no-gutters slider-text align-items-center justify-content-start" data-scrollax-parent="true">
+          <div class="col-md-6 ftco-animate">
+
+            <h1 class="mb-4">Placement Prediction Using Machine Learning</h1>
+            <p>Predict your placement chances using advanced ML models and receive insights to improve your profile.</p>
+
+            {% if user.is_authenticated %}
+<div class="d-flex gap-3 mt-3">
+    <a href="{% url 'Model' %}" class="btn btn-primary px-4 py-3">Model</a>
+    <a href="{% url 'upload_resume' %}" class="btn btn-primary px-4 py-3">Resume Analysis</a>
+</div>
+{% else %}
+<div class="d-flex gap-3 mt-3">
+    <a href="{% url 'users-register' %}" class="btn btn-primary px-4 py-3">Register</a>
+    <a href="{% url 'login' %}" class="btn btn-primary px-4 py-3">Login</a>
+</div>
+{% endif %}
+
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="slider-item" style="background-image:url(/static/images/bg_2.jpg);">
+      	<div class="overlay"></div>
+        <div class="container">
+          <div class="row no-gutters slider-text align-items-center justify-content-start" data-scrollax-parent="true">
+          <div class="col-md-6 ftco-animate">
+
+            <h1 class="mb-4">Resume Analysis Using LLM</h1>
+            <p>Upload your resume and get detailed ATS scoring, suggestions, and improvements powered by Large Language Models.</p>
+
+            {% if user.is_authenticated %}
+<div class="d-flex gap-3 mt-3">
+    <a href="{% url 'Model' %}" class="btn btn-primary px-4 py-3">Model</a>
+    <a href="{% url 'upload_resume' %}" class="btn btn-primary px-4 py-3">Resume Analysis</a>
+</div>
+{% else %}
+<div class="d-flex gap-3 mt-3">
+    <a href="{% url 'users-register' %}" class="btn btn-primary px-4 py-3">Register</a>
+    <a href="{% url 'login' %}" class="btn btn-primary px-4 py-3">Login</a>
+</div>
+{% endif %}
+
+          </div>
+        </div>
+        </div>
+      </div>
+</section>
+
+  {% if user.is_authenticated %}
+  <section class="ftco-services ftco-no-pb">
+    <div class="container-wrap">
+        <div class="row no-gutters">
+
+            <div class="col-md-3 d-flex services align-self-stretch py-5 px-4 ftco-animate bg-primary">
+                <div class="media block-6 d-block text-center">
+                    <div class="icon d-flex justify-content-center align-items-center">
+                        <span class="flaticon-teacher"></span>
+                    </div>
+                    <div class="media-body p-2 mt-3">
+                        <h3 class="heading">Placement Prediction (ML)</h3>
+                        <p>Get accurate placement predictions using advanced machine learning models based on your skills and academic profile.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 d-flex services align-self-stretch py-5 px-4 ftco-animate bg-darken">
+                <div class="media block-6 d-block text-center">
+                    <div class="icon d-flex justify-content-center align-items-center">
+                        <span class="flaticon-reading"></span>
+                    </div>
+                    <div class="media-body p-2 mt-3">
+                        <h3 class="heading">Resume Analysis (LLM)</h3>
+                        <p>Analyze your resume with LLMs for ATS score, job-fit recommendations, and improvement suggestions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 d-flex services align-self-stretch py-5 px-4 ftco-animate bg-primary">
+                <div class="media block-6 d-block text-center">
+                    <div class="icon d-flex justify-content-center align-items-center">
+                        <span class="flaticon-books"></span>
+                    </div>
+                    <div class="media-body p-2 mt-3">
+                        <h3 class="heading">Career Recommendation</h3>
+                        <p>Receive AI-powered personalized career and domain recommendations based on your strengths and interests.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 d-flex services align-self-stretch py-5 px-4 ftco-animate bg-darken">
+                <div class="media block-6 d-block text-center">
+                    <div class="icon d-flex justify-content-center align-items-center">
+                        <span class="flaticon-diploma"></span>
+                    </div>
+                    <div class="media-body p-2 mt-3">
+                        <h3 class="heading">Skill Gap Analysis</h3>
+                        <p>Identify skill gaps and get a list of recommended courses to enhance your profile for top placements.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+		<section class="ftco-section ftco-no-pt ftc-no-pb">
+    <div class="container">
+        <div class="row d-flex">
+            <div class="col-md-5 order-md-last wrap-about wrap-about d-flex align-items-stretch">
+                <div class="img" style="background-image: url(/static/images/about.jpg); border"></div>
+            </div>
+
+            <div class="col-md-7 wrap-about py-5 pr-md-4 ftco-animate">
+                <h2 class="mb-4">What We Offer</h2>
+                <p>We provide an AI-powered career enhancement platform that helps students and professionals boost their chances of getting placed using Machine Learning and Large Language Models.</p>
+
+                <div class="row mt-5">
+
+                    <div class="col-lg-6">
+                        <div class="services-2 d-flex">
+                            <div class="icon mt-2 d-flex justify-content-center align-items-center">
+                                <span class="flaticon-security"></span>
+                            </div>
+                            <div class="text pl-3">
+                                <h3>ML-Based Placement Prediction</h3>
+                                <p>Analyze your academic records and skills to predict placement probability using machine learning.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="services-2 d-flex">
+                            <div class="icon mt-2 d-flex justify-content-center align-items-center">
+                                <span class="flaticon-reading"></span>
+                            </div>
+                            <div class="text pl-3">
+                                <h3>Resume Analysis (LLM)</h3>
+                                <p>Get ATS score, resume optimization tips, and job-matching insights powered by Large Language Models.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="services-2 d-flex">
+                            <div class="icon mt-2 d-flex justify-content-center align-items-center">
+                                <span class="flaticon-diploma"></span>
+                            </div>
+                            <div class="text pl-3">
+                                <h3>Career Path Recommendation</h3>
+                                <p>Receive personalized career suggestions based on your strengths and industry demand.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="services-2 d-flex">
+                            <div class="icon mt-2 d-flex justify-content-center align-items-center">
+                                <span class="flaticon-education"></span>
+                            </div>
+                            <div class="text pl-3">
+                                <h3>Skill Gap Identification</h3>
+                                <p>Identify missing skills and learn what to improve to become job-ready faster.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="services-2 d-flex">
+                            <div class="icon mt-2 d-flex justify-content-center align-items-center">
+                                <span class="flaticon-jigsaw"></span>
+                            </div>
+                            <div class="text pl-3">
+                                <h3>Interview Preparation Insights</h3>
+                                <p>Get AI-driven insights, expected questions, and tips based on your target job role.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="services-2 d-flex">
+                            <div class="icon mt-2 d-flex justify-content-center align-items-center">
+                                <span class="flaticon-kids"></span>
+                            </div>
+                            <div class="text pl-3">
+                                <h3>Profile Strength Evaluation</h3>
+                                <p>Understand your profile score and get actionable recommendations to improve your employability.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+		
+
+		<section class="ftco-section ftco-counter img" id="section-counter" 
+         style="background-image: url(/static/images/bg_3.jpg);" 
+         data-stellar-background-ratio="0.5">
+
+    <div class="container">
+
+        <div class="row justify-content-center mb-5 pb-2 d-flex">
+            
+            <div class="col-md-6 align-items-stretch d-flex">
+                <div class="img img-video d-flex align-items-center" 
+                     style="background-image: url(/static/images/about-2.jpg);">
+                    <div class="video justify-content-center">
+                        <a href="https://vimeo.com/45830194" 
+                           class="icon-video popup-vimeo d-flex justify-content-center align-items-center">
+                            <span class="ion-ios-play"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 heading-section heading-section-white ftco-animate pl-lg-5 pt-md-0 pt-5">
+                <h2 class="mb-4">AI-Powered Career Platform</h2>
+                <p>Our platform leverages Machine Learning to predict placement chances based on academic performance, skill sets, and key indicators. It helps students understand their strengths and improve their employability.</p>
+                <p>We also use advanced LLMs to analyze resumes, generate ATS scores, provide personalized suggestions, and recommend job roles that match your profile.</p>
+            </div>
+
+        </div>
+
+        <div class="row d-md-flex align-items-center justify-content-center">
+            <div class="col-lg-12">
+                <div class="row d-md-flex align-items-center">
+
+                    <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18">
+                            <div class="icon"><span class="flaticon-doctor"></span></div>
+                            <div class="text">
+                                <strong class="number" data-number="95">0</strong>
+                                <span>Model Accuracy (%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18">
+                            <div class="icon"><span class="flaticon-doctor"></span></div>
+                            <div class="text">
+                                <strong class="number" data-number="1200">0</strong>
+                                <span>Users Benefited</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18">
+                            <div class="icon"><span class="flaticon-doctor"></span></div>
+                            <div class="text">
+                                <strong class="number" data-number="3500">0</strong>
+                                <span>Resumes Analyzed</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18">
+                            <div class="icon"><span class="flaticon-doctor"></span></div>
+                            <div class="text">
+                                <strong class="number" data-number="5000">0</strong>
+                                <span>Predictions Generated</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+	<section class="ftco-section">
+    <div class="container-fluid px-4">
+        <div class="row justify-content-center mb-5 pb-2">
+            <div class="col-md-8 text-center heading-section ftco-animate">
+                <h2 class="mb-4"><span>Our</span> Courses</h2>
+                <p>Explore our wide range of professional courses designed to build your future with strong knowledge and practical skills.</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Course 1 -->
+            <div class="col-md-3 course ftco-animate">
+                <div class="img" style="background-image: url(/static/images/course-1.jpg);"></div>
+                <div class="text pt-4">
+                    <p class="meta d-flex">
+                        <span><i class="icon-user mr-2"></i>Dr. Williams</span>
+                        <span><i class="icon-table mr-2"></i>40 seats</span>
+                        <span><i class="icon-calendar mr-2"></i>3 Years</span>
+                    </p>
+                    <h3><a href="#">Computer Science Engineering</a></h3>
+                    <p>Learn core computer science concepts, programming, algorithms, and modern technologies that power today’s digital world.</p>
+                    <p><a href="#" class="btn btn-primary">Apply now</a></p>
+                </div>
+            </div>
+
+            <!-- Course 2 -->
+            <div class="col-md-3 course ftco-animate">
+                <div class="img" style="background-image: url(/static/images/course-2.jpg);"></div>
+                <div class="text pt-4">
+                    <p class="meta d-flex">
+                        <span><i class="icon-user mr-2"></i>Prof. Daniel</span>
+                        <span><i class="icon-table mr-2"></i>30 seats</span>
+                        <span><i class="icon-calendar mr-2"></i>2 Years</span>
+                    </p>
+                    <h3><a href="#">Business Administration</a></h3>
+                    <p>Develop strong managerial skills, leadership qualities, and strategic decision-making for the modern business world.</p>
+                    <p><a href="#" class="btn btn-primary">Apply now</a></p>
+                </div>
+            </div>
+
+            <!-- Course 3 -->
+            <div class="col-md-3 course ftco-animate">
+                <div class="img" style="background-image: url(/static/images/course-3.jpg);"></div>
+                <div class="text pt-4">
+                    <p class="meta d-flex">
+                        <span><i class="icon-user mr-2"></i>Ms. Laura</span>
+                        <span><i class="icon-table mr-2"></i>25 seats</span>
+                        <span><i class="icon-calendar mr-2"></i>1 Year</span>
+                    </p>
+                    <h3><a href="#">Graphic & Creative Design</a></h3>
+                    <p>Master visual communication, branding, typography, and UI/UX concepts using industry-leading design tools.</p>
+                    <p><a href="#" class="btn btn-primary">Apply now</a></p>
+                </div>
+            </div>
+
+            <!-- Course 4 -->
+            <div class="col-md-3 course ftco-animate">
+                <div class="img" style="background-image: url(/static/images/course-4.jpg);"></div>
+                <div class="text pt-4">
+                    <p class="meta d-flex">
+                        <span><i class="icon-user mr-2"></i>Mr. John</span>
+                        <span><i class="icon-table mr-2"></i>15 seats</span>
+                        <span><i class="icon-calendar mr-2"></i>3 Years</span>
+                    </p>
+                    <h3><a href="#">Mechanical Engineering</a></h3>
+                    <p>Gain deep knowledge in mechanics, manufacturing, robotics, and industrial machine design with hands-on practice.</p>
+                    <p><a href="#" class="btn btn-primary">Apply now</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+		<section class="ftco-section bg-light">
+    <div class="container-fluid px-4">
+        <div class="row justify-content-center mb-5 pb-2">
+          <div class="col-md-8 text-center heading-section ftco-animate">
+            <h2 class="mb-4">Placement & Resume Experts</h2>
+            <p>Our expert team helps students and professionals improve their resumes, prepare for interviews, and achieve successful job placements.</p>
+          </div>
+        </div>  
+        <div class="row">
+
+            <!-- Expert 1 -->
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="staff">
+                    <div class="img-wrap d-flex align-items-stretch">
+                        <div class="img align-self-stretch" style="background-image: url(/static/images/teacher-1.jpg);"></div>
+                    </div>
+                    <div class="text pt-3 text-center">
+                        <h3>Bianca Wilson</h3>
+                        <span class="position mb-2">Resume Specialist</span>
+                        <div class="faded">
+                            <p>Expert in creating ATS-friendly resumes and optimizing applicant profiles for top career opportunities.</p>
+                            <ul class="ftco-social text-center">
+                                <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-google-plus"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expert 2 -->
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="staff">
+                    <div class="img-wrap d-flex align-items-stretch">
+                        <div class="img align-self-stretch" style="background-image: url(/static/images/teacher-2.jpg);"></div>
+                    </div>
+                    <div class="text pt-3 text-center">
+                        <h3>Mitch Parker</h3>
+                        <span class="position mb-2">Placement Trainer</span>
+                        <div class="faded">
+                            <p>Helps students build confidence with mock interviews, communication training, and job readiness programs.</p>
+                            <ul class="ftco-social text-center">
+                                <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-google-plus"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expert 3 -->
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="staff">
+                    <div class="img-wrap d-flex align-items-stretch">
+                        <div class="img align-self-stretch" style="background-image: url(/static/images/teacher-3.jpg);"></div>
+                    </div>
+                    <div class="text pt-3 text-center">
+                        <h3>Stella Smith</h3>
+                        <span class="position mb-2">Career Counselor</span>
+                        <div class="faded">
+                            <p>Guides students in choosing the right career path based on strengths, skills, and industry trends.</p>
+                            <ul class="ftco-social text-center">
+                                <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-google-plus"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expert 4 -->
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="staff">
+                    <div class="img-wrap d-flex align-items-stretch">
+                        <div class="img align-self-stretch" style="background-image: url(/static/images/teacher-4.jpg);"></div>
+                    </div>
+                    <div class="text pt-3 text-center">
+                        <h3>Monshe Henderson</h3>
+                        <span class="position mb-2">Interview Coach</span>
+                        <div class="faded">
+                            <p>Specialist in technical and HR interview preparation, helping candidates stand out in competitive job markets.</p>
+                            <ul class="ftco-social text-center">
+                                <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-google-plus"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
+   <section class="ftco-section ftco-consult ftco-no-pt ftco-no-pb" style="background-image: url(/static/images/bg_5.jpg);" data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row justify-content-end">
+            <div class="col-md-6 py-5 px-md-5">
+                <div class="py-md-5">
+                    <div class="heading-section heading-section-white ftco-animate mb-5">
+                        <h2 class="mb-4">Request Placement Support</h2>
+                        <p>Get personalized guidance for resume building, ATS optimization, job matching, and interview preparation. Our team helps you enhance your career path with expert assistance.</p>
+                    </div>
+                    <form action="#" class="appointment-form ftco-animate">
+                        <div class="d-md-flex">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="First Name">
+                            </div>
+                            <div class="form-group ml-md-4">
+                                <input type="text" class="form-control" placeholder="Last Name">
+                            </div>
+                        </div>
+                        <div class="d-md-flex">
+                            <div class="form-group">
+                                <div class="form-field">
+                                    <div class="select-wrap">
+                                        <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                        <select name="" id="" class="form-control">
+                                            <option value="">Select Service</option>
+                                            <option value="">Resume Analysis</option>
+                                            <option value="">ATS Score Evaluation</option>
+                                            <option value="">Career Guidance</option>
+                                            <option value="">Mock Interview Preparation</option>
+                                            <option value="">Job Placement Support</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group ml-md-4">
+                                <input type="text" class="form-control" placeholder="Phone">
+                            </div>
+                        </div>
+                        <div class="d-md-flex">
+                            <div class="form-group">
+                                <textarea name="" id="" cols="30" rows="2" class="form-control" placeholder="Message"></textarea>
+                            </div>
+                            <div class="form-group ml-md-4">
+                                <input type="submit" value="Submit Request" class="btn btn-primary py-3 px-4">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+	<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-2">
+            <div class="col-md-8 text-center heading-section ftco-animate">
+                <h2 class="mb-4"><span>Latest</span> Updates</h2>
+                <p>Stay up-to-date with the latest insights, tips, and strategies for resume building, placement preparation, and career advancement.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="blog-entry">
+                    <a href="#" class="block-20 d-flex align-items-end" style="background-image: url('/static/images/image_1.jpg');">
+                        <div class="meta-date text-center p-2">
+                            <span class="day">03</span>
+                            <span class="mos">Dec</span>
+                            <span class="yr">2025</span>
+                        </div>
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="#">Top Resume Tips for Job Seekers</a></h3>
+                        <p>Learn how to craft an ATS-friendly resume that highlights your skills and increases your chances of getting shortlisted.</p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="#" class="btn btn-primary">Read More <span class="ion-ios-arrow-round-forward"></span></a></p>
+                            <p class="ml-auto mb-0">
+                                <a href="#" class="mr-2">Admin</a>
+                                <a href="#" class="meta-chat"><span class="icon-chat"></span> 5</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="blog-entry">
+                    <a href="#" class="block-20 d-flex align-items-end" style="background-image: url('/static/images/image_2.jpg');">
+                        <div class="meta-date text-center p-2">
+                            <span class="day">02</span>
+                            <span class="mos">Dec</span>
+                            <span class="yr">2025</span>
+                        </div>
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="#">How to Ace Your Interviews</a></h3>
+                        <p>Discover effective strategies and common questions to prepare for interviews and impress potential employers.</p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="#" class="btn btn-primary">Read More <span class="ion-ios-arrow-round-forward"></span></a></p>
+                            <p class="ml-auto mb-0">
+                                <a href="#" class="mr-2">Admin</a>
+                                <a href="#" class="meta-chat"><span class="icon-chat"></span> 3</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="blog-entry">
+                    <a href="#" class="block-20 d-flex align-items-end" style="background-image: url('/static/images/image_3.jpg');">
+                        <div class="meta-date text-center p-2">
+                            <span class="day">01</span>
+                            <span class="mos">Dec</span>
+                            <span class="yr">2025</span>
+                        </div>
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="#">Resume Analysis: Common Mistakes</a></h3>
+                        <p>Identify the most frequent resume mistakes and learn how to avoid them to boost your chances of landing interviews.</p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="#" class="btn btn-primary">Read More <span class="ion-ios-arrow-round-forward"></span></a></p>
+                            <p class="ml-auto mb-0">
+                                <a href="#" class="mr-2">Admin</a>
+                                <a href="#" class="meta-chat"><span class="icon-chat"></span> 4</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+		<section class="ftco-section testimony-section">
+  <div class="container">
+    <div class="row justify-content-center mb-5 pb-2">
+      <div class="col-md-8 text-center heading-section ftco-animate">
+        <h2 class="mb-4">What Our Students Say</h2>
+        <p>Hear directly from our students about how our resume analysis and placement support helped them achieve career success.</p>
+      </div>
+    </div>
+    <div class="row ftco-animate justify-content-center">
+      <div class="col-md-12">
+        <div class="carousel-testimony owl-carousel">
+          
+          <div class="item">
+            <div class="testimony-wrap d-flex">
+              <div class="user-img mr-4" style="background-image: url(/static/images/teacher-1.jpg)">
+              </div>
+              <div class="text ml-2">
+              	<span class="quote d-flex align-items-center justify-content-center">
+                  <i class="icon-quote-left"></i>
+                </span>
+                <p>The resume review sessions helped me highlight my strengths effectively. I got multiple interview calls within a week!</p>
+                <p class="name">Racky Henderson</p>
+                <span class="position">Software Developer</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="item">
+            <div class="testimony-wrap d-flex">
+              <div class="user-img mr-4" style="background-image: url(/static/images/teacher-2.jpg)">
+              </div>
+              <div class="text ml-2">
+              	<span class="quote d-flex align-items-center justify-content-center">
+                  <i class="icon-quote-left"></i>
+                </span>
+                <p>The placement guidance sessions were extremely helpful. The mock interviews boosted my confidence tremendously.</p>
+                <p class="name">Henry Dee</p>
+                <span class="position">Data Analyst</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="item">
+            <div class="testimony-wrap d-flex">
+              <div class="user-img mr-4" style="background-image: url(/static/images/teacher-3.jpg)">
+              </div>
+              <div class="text ml-2">
+              	<span class="quote d-flex align-items-center justify-content-center">
+                  <i class="icon-quote-left"></i>
+                </span>
+                <p>I learned how to tailor my resume for different companies. The guidance really made a difference in my placement journey.</p>
+                <p class="name">Mark Huff</p>
+                <span class="position">Marketing Executive</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="item">
+            <div class="testimony-wrap d-flex">
+              <div class="user-img mr-4" style="background-image: url(/static/images/teacher-4.jpg)">
+              </div>
+              <div class="text ml-2">
+              	<span class="quote d-flex align-items-center justify-content-center">
+                  <i class="icon-quote-left"></i>
+                </span>
+                <p>The personalized resume analysis helped me land my dream internship. Highly recommended!</p>
+                <p class="name">Rodel Golez</p>
+                <span class="position">Finance Intern</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="item">
+            <div class="testimony-wrap d-flex">
+              <div class="user-img mr-4" style="background-image: url(/static/images/teacher-1.jpg)">
+              </div>
+              <div class="text ml-2">
+              	<span class="quote d-flex align-items-center justify-content-center">
+                  <i class="icon-quote-left"></i>
+                </span>
+                <p>The sessions provided practical tips for interviews and resume enhancement. I felt fully prepared and confident.</p>
+                <p class="name">Ken Bosh</p>
+                <span class="position">Software Engineer</span>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+	<section class="ftco-gallery">
+  <div class="container-wrap">
+    <div class="row no-gutters">
+      
+      <div class="col-md-3 ftco-animate">
+        <a href="/static/images/image_1.jpg" class="gallery image-popup img d-flex align-items-center" style="background-image: url(/static/images/course-1.jpg);">
+          <div class="icon mb-4 d-flex align-items-center justify-content-center">
+            <span class="icon-instagram"></span>
+          </div>
+          <div class="caption text-center text-white">
+            <p>Resume Workshop</p>
+          </div>
+        </a>
+      </div>
+      
+      <div class="col-md-3 ftco-animate">
+        <a href="/static/images/image_2.jpg" class="gallery image-popup img d-flex align-items-center" style="background-image: url(/static/images/image_2.jpg);">
+          <div class="icon mb-4 d-flex align-items-center justify-content-center">
+            <span class="icon-instagram"></span>
+          </div>
+          <div class="caption text-center text-white">
+            <p>Mock Interview Session</p>
+          </div>
+        </a>
+      </div>
+      
+      <div class="col-md-3 ftco-animate">
+        <a href="/static/images/image_3.jpg" class="gallery image-popup img d-flex align-items-center" style="background-image: url(/static/images/image_3.jpg);">
+          <div class="icon mb-4 d-flex align-items-center justify-content-center">
+            <span class="icon-instagram"></span>
+          </div>
+          <div class="caption text-center text-white">
+            <p>Placement Preparation</p>
+          </div>
+        </a>
+      </div>
+      
+      <div class="col-md-3 ftco-animate">
+        <a href="/static/images/image_4.jpg" class="gallery image-popup img d-flex align-items-center" style="background-image: url(/static/images/image_4.jpg);">
+          <div class="icon mb-4 d-flex align-items-center justify-content-center">
+            <span class="icon-instagram"></span>
+          </div>
+          <div class="caption text-center text-white">
+            <p>Career Guidance</p>
+          </div>
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+
+		
+  <footer class="ftco-footer ftco-bg-dark ftco-section">
+  <div class="container">
+    <div class="row mb-5">
+      
+      <!-- Contact Info -->
+      <div class="col-md-6 col-lg-3">
+        <div class="ftco-footer-widget mb-5">
+          <h2 class="ftco-heading-2">Have a Questions?</h2>
+          <div class="block-23 mb-3">
+            <ul>
+              <li><span class="icon icon-map-marker"></span><span class="text">123 Career St, Placement City, California, USA</span></li>
+              <li><a href="#"><span class="icon icon-phone"></span><span class="text">+1 800 123 4567</span></a></li>
+              <li><a href="#"><span class="icon icon-envelope"></span><span class="text">contact@careerhub.com</span></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Recent Blog / Updates -->
+      <div class="col-md-6 col-lg-3">
+        <div class="ftco-footer-widget mb-5">
+          <h2 class="ftco-heading-2">Latest Updates</h2>
+          
+          <div class="block-21 mb-4 d-flex">
+            <a class="blog-img mr-4" style="background-image: url(/static/images/image_1.jpg);"></a>
+            <div class="text">
+              <h3 class="heading"><a href="#">Resume Building Tips for Freshers</a></h3>
+              <div class="meta">
+                <div><a href="#"><span class="icon-calendar"></span> Dec 1, 2025</a></div>
+                <div><a href="#"><span class="icon-person"></span> Admin</a></div>
+                <div><a href="#"><span class="icon-chat"></span> 5</a></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="block-21 mb-5 d-flex">
+            <a class="blog-img mr-4" style="background-image: url(/static/images/image_2.jpg);"></a>
+            <div class="text">
+              <h3 class="heading"><a href="#">Mock Interview Sessions Scheduled</a></h3>
+              <div class="meta">
+                <div><a href="#"><span class="icon-calendar"></span> Dec 3, 2025</a></div>
+                <div><a href="#"><span class="icon-person"></span> Admin</a></div>
+                <div><a href="#"><span class="icon-chat"></span> 3</a></div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      <!-- Quick Links -->
+      <div class="col-md-6 col-lg-3">
+        <div class="ftco-footer-widget mb-5 ml-md-4">
+          <h2 class="ftco-heading-2">Quick Links</h2>
+          <ul class="list-unstyled">
+            <li><a href="#"><span class="ion-ios-arrow-round-forward mr-2"></span>Home</a></li>
+            <li><a href="#"><span class="ion-ios-arrow-round-forward mr-2"></span>About</a></li>
+            <li><a href="#"><span class="ion-ios-arrow-round-forward mr-2"></span>Services</a></li>
+            <li><a href="#"><span class="ion-ios-arrow-round-forward mr-2"></span>Placements</a></li>
+            <li><a href="#"><span class="ion-ios-arrow-round-forward mr-2"></span>Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Newsletter & Social -->
+      <div class="col-md-6 col-lg-3">
+        <div class="ftco-footer-widget mb-5">
+          <h2 class="ftco-heading-2">Subscribe</h2>
+          <form action="#" class="subscribe-form">
+            <div class="form-group">
+              <input type="text" class="form-control mb-2 text-center" placeholder="Enter email address">
+              <input type="submit" value="Subscribe" class="form-control submit px-3">
+            </div>
+          </form>
+        </div>
+        <div class="ftco-footer-widget mb-5">
+          <h2 class="ftco-heading-2 mb-0">Connect With Us</h2>
+          <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-3">
+            <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
+            <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
+            <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
+            <li class="ftco-animate"><a href="#"><span class="icon-linkedin"></span></a></li>
+          </ul>
+        </div>
+      </div>
+      
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <p>&copy; 2025 CareerHub. All Rights Reserved. Designed with <span class="icon-heart"></span> by Your Company</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+
+  <!-- loader -->
+  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+
+   {% endif %}
+  <script src="/static/js/jquery.min.js"></script>
+  <script src="/static/js/jquery-migrate-3.0.1.min.js"></script>
+  <script src="/static/js/popper.min.js"></script>
+  <script src="/static/js/bootstrap.min.js"></script>
+  <script src="/static/js/jquery.easing.1.3.js"></script>
+  <script src="/static/js/jquery.waypoints.min.js"></script>
+  <script src="/static/js/jquery.stellar.min.js"></script>
+  <script src="/static/js/owl.carousel.min.js"></script>
+  <script src="/static/js/jquery.magnific-popup.min.js"></script>
+  <script src="/static/js/aos.js"></script>
+  <script src="/static/js/jquery.animateNumber.min.js"></script>
+  <script src="/static/js/scrollax.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+  <script src="/static/js/google-map.js"></script>
+  <script src="/static/js/main.js"></script>
+    
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot Widget</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <style>
+    #chatbot-wrapper * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    /* ---------- Chat Circle ---------- */
+    #chat-circle {
+      position: fixed;
+      bottom: 40px;
+      right: 50px;
+      background: #fd7e14;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0px 3px 16px rgba(243, 164, 60, 0.6);
+      z-index: 2147483647 !important;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    #chat-circle:hover {
+      transform: scale(1.1);
+    }
+
+    /* ---------- Chat Box ---------- */
+    .chat-box {
+      display: none;
+      position: fixed;
+      right: 30px;
+      bottom: 100px;
+      width: 350px;
+      max-height: 500px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
+      z-index: 2147483647 !important;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    .chat-box-header {
+      background: #fd7e14;
+      color: #fff;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-box-header i {
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .chat-box-body {
+      padding: 10px;
+      height: 300px;
+      overflow-y: auto;
+      background: #f0f7ff;
+    }
+
+    .chat-input {
+      display: flex;
+      border-top: 1px solid #ddd;
+      align-items: center;
+      padding: 8px;
+    }
+
+    #chat-input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #fd7e14;
+      outline: none;
+      border-radius: 5px;
+    }
+
+    .chat-submit, #voice-btn {
+      background: none;
+      border: none;
+      color: #fd7e14;
+      font-size: 20px;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+
+    .chat-msg {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .chat-msg.self {
+      flex-direction: row-reverse;
+    }
+
+    .msg-avatar img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    .cm-msg-text {
+      max-width: 70%;
+      background: #e1f0ff;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 0 10px;
+      color: #222;
+    }
+
+    .chat-msg.self .cm-msg-text {
+      background: #fd7e14;
+      color: #fff;
+    }
+
+    #recognizing-status {
+      display: none;
+      margin-left: 10px;
+      background: #fd7e14;
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 12px;
+    }
+
+    #voice-lang {
+      margin: 5px 10px;
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px solid #fd7e14;
+      background: #fff;
+      color: #000;
+      font-size: 14px;
+      width: calc(100% - 20px);
+    }
+
+    /* ---------- Loader Animation ---------- */
+    .loading-msg {
+      display: flex;
+      align-items: center;
+    }
+
+    .loading-dots {
+      display: flex;
+      gap: 5px;
+      margin-left: 10px;
+    }
+
+    .loading-dots span {
+      width: 8px;
+      height: 8px;
+      background: #fd7e14;
+      border-radius: 50%;
+      animation: blink 1.4s infinite both;
+    }
+
+    .loading-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .loading-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0; }
+      40% { opacity: 1; }
+    }
+  </style>
+</head>
+
+<body>
+{% if user.is_authenticated %}
+
+  <div id="chat-circle">
+    <i class="material-icons">chat</i>
+  </div>
+
+  <div class="chat-box">
+    <div class="chat-box-header">
+      <span>Your ChatBot</span>
+      <i class="material-icons chat-box-toggle">close</i>
+    </div>
+
+    <div class="chat-box-body chat-logs"></div>
+
+    <select id="voice-lang"></select>
+    <div id="recognizing-status">Recognizing...</div>
+
+    <div class="chat-input">
+      <input type="text" id="chat-input" placeholder="Send a message...">
+      <button class="chat-submit" id="chat-submit"><i class="material-icons">send</i></button>
+      <button id="voice-btn" title="Start voice input"><i class="fas fa-microphone"></i></button>
+    </div>
+  </div>
+{% endif %}
+
+<script>
+  let INDEX = 0;
+  let loadedVoices = [];
+
+  $('#chat-circle').click(() => $('.chat-box').fadeIn());
+  $('.chat-box-toggle').click(() => $('.chat-box').fadeOut());
+
+  $('#chat-input').keypress(function(e) {
+    if (e.which === 13 && !e.shiftKey) {
+      $('#chat-submit').click();
+      return false;
+    }
+  });
+
+  $('#chat-submit').click(async function (e) {
+    e.preventDefault();
+    let userMsg = $('#chat-input').val();
+    if (userMsg.trim() === '') return;
+
+    const selectedLang = $('#voice-lang').val();
+    const targetLang = selectedLang.split('-')[0];
+    let translatedInput = userMsg;
+
+    generate_message(userMsg, 'self');
+
+    if (targetLang !== 'en') {
+      translatedInput = await translateText(userMsg, 'en');
+    }
+
+
+    showLoadingMessage();
+
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'chatbot' %}",
+      data: {
+        question: translatedInput,
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: async function (response) {
+        hideLoadingMessage();
+        const originalReply = response.response;
+        let reply = originalReply;
+
+        if (targetLang !== 'en') {
+          reply = await translateText(originalReply, targetLang);
+        }
+
+        generate_message(reply, 'user');
+        speakText(reply, selectedLang);
+      },
+      error: function () {
+        hideLoadingMessage();
+        generate_message("Error: could not reach server.", 'user');
+      }
+    });
+
+    $('#chat-input').val('');
+  });
+
+  function generate_message(msg, type) {
+    INDEX++;
+    const str = `
+      <div class="chat-msg ${type}">
+        <div class="msg-avatar">
+          <img src="${type === 'self' ? 'https://pnglove.com/data/img/864_vZGm.jpg' : 'https://img.freepik.com/premium-photo/adorable-ai-chat-bot-cute-robot-with-headphones-blue-background-social-media-post-size_795881-37512.jpg'}">
+        </div>
+        <div class="cm-msg-text">${msg}</div>
+      </div>`;
+    $('.chat-logs').append(str);
+    $('.chat-box-body').scrollTop($('.chat-box-body')[0].scrollHeight);
+  }
+
+  // ---------- Loading Message ----------
+  function showLoadingMessage() {
+    const loadingHTML = `
+      <div class="chat-msg user loading-msg" id="loading-msg">
+        <div class="msg-avatar">
+          <img src="https://img.freepik.com/premium-photo/adorable-ai-chat-bot-cute-robot-with-headphones-blue-background-social-media-post-size_795881-37512.jpg">
+        </div>
+        <div class="cm-msg-text">
+          <div class="loading-dots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>`;
+    $('.chat-logs').append(loadingHTML);
+    $('.chat-box-body').scrollTop($('.chat-box-body')[0].scrollHeight);
+  }
+
+  function hideLoadingMessage() {
+    $('#loading-msg').remove();
+  }
+
+  // ---------- Voice Recognition ----------
+  const voiceBtn = document.getElementById('voice-btn');
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = 'en-US';
+  recognition.interimResults = false;
+
+  voiceBtn.addEventListener('click', () => {
+    document.getElementById('recognizing-status').style.display = 'inline-block';
+    recognition.start();
+  });
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    $('#chat-input').val(transcript);
+    $('#chat-submit').click();
+    document.getElementById('recognizing-status').style.display = 'none';
+  };
+
+  recognition.onerror = () => {
+    document.getElementById('recognizing-status').style.display = 'none';
+  };
+  recognition.onend = () => {
+    document.getElementById('recognizing-status').style.display = 'none';
+  };
+
+  // ---------- Voice Speaking ----------
+  function speakText(text, lang) {
+    const voice = loadedVoices.find(v => v.lang === lang);
+    if (voice && lang.startsWith('en')) {
+      const sentences = text.match(/[^.!?]+[.!?]+|\s*$/g).filter(s => s.trim().length > 0);
+      let i = 0;
+      function speakNext() {
+        if (i >= sentences.length) return;
+        const utter = new SpeechSynthesisUtterance(sentences[i]);
+        utter.lang = lang;
+        utter.voice = voice;
+        utter.onend = () => { i++; setTimeout(speakNext, 200); };
+        speechSynthesis.speak(utter);
+      }
+      speechSynthesis.cancel();
+      speakNext();
+    } else {
+      const chunks = text.match(/.{1,200}(\s|$)/g);
+      let i = 0;
+      function playNext() {
+        if (i >= chunks.length) return;
+        const audioURL = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(chunks[i])}&tl=${lang}&client=tw-ob`;
+        const audio = new Audio(audioURL);
+        audio.onended = () => { i++; setTimeout(playNext, 300); };
+        audio.onerror = () => console.error("Audio playback failed");
+        audio.play();
+      }
+      playNext();
+    }
+  }
+
+  // ---------- Translate Function ----------
+  function translateText(text, targetLang) {
+    return fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`)
+      .then(res => res.json())
+      .then(data => data[0].map(d => d[0]).join(' '))
+      .catch(() => text);
+  }
+
+  // ---------- Populate Voices ----------
+  function populateVoices() {
+    loadedVoices = speechSynthesis.getVoices();
+    const select = document.getElementById('voice-lang');
+    select.innerHTML = '';
+
+    const fallbackLanguages = [
+      { lang: 'hi-IN', name: 'Hindi' },
+      { lang: 'ta-IN', name: 'Tamil' },
+      { lang: 'te-IN', name: 'Telugu' },
+      { lang: 'kn-IN', name: 'Kannada' },
+      { lang: 'ml-IN', name: 'Malayalam' },
+      { lang: 'bn-IN', name: 'Bengali' },
+      { lang: 'gu-IN', name: 'Gujarati' },
+      { lang: 'pa-IN', name: 'Punjabi' },
+      { lang: 'mr-IN', name: 'Marathi' },
+      { lang: 'ur-IN', name: 'Urdu' }
+    ];
+
+    loadedVoices.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v.lang;
+      opt.textContent = `${v.name} (${v.lang})`;
+      select.appendChild(opt);
+    });
+
+    fallbackLanguages.forEach(fb => {
+      if (!loadedVoices.find(v => v.lang === fb.lang)) {
+        const opt = document.createElement('option');
+        opt.value = fb.lang;
+        opt.textContent = `${fb.name} (${fb.lang})`;
+        select.appendChild(opt);
+      }
+    });
+
+    const defaultVoice = loadedVoices.find(v => v.lang === 'en-US');
+    select.value = defaultVoice ? defaultVoice.lang : 'en-US';
+  }
+
+  if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = populateVoices;
+  }
+</script>
+</body>
+</html>
