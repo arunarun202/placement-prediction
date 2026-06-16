@@ -38,8 +38,8 @@ const Navbar = () => {
             
             {user && (
               <>
+                <Link to="/dashboard" className={`font-medium transition-colors ${isActive('/dashboard')}`}>Dashboard</Link>
                 <Link to="/predict" className={`font-medium transition-colors ${isActive('/predict')}`}>Predict</Link>
-                <Link to="/chatbot" className={`font-medium transition-colors ${isActive('/chatbot')}`}>Chatbot</Link>
                 <Link to="/resume" className={`font-medium transition-colors ${isActive('/resume')}`}>Resume AI</Link>
               </>
             )}
@@ -76,11 +76,8 @@ const Navbar = () => {
                     <Link to="/profile" className="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-[var(--color-brand-primary)]">
                       <FaUserCircle /> Profile
                     </Link>
-                    <Link to="/predictions" className="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-[var(--color-brand-primary)]">
-                      <FaHistory /> Prediction History
-                    </Link>
-                    <Link to="/resumes" className="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-[var(--color-brand-primary)]">
-                      <FaFileAlt /> Saved Resumes
+                    <Link to="/dashboard" className="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-[var(--color-brand-primary)]">
+                      <FaHistory /> Dashboard
                     </Link>
                     <div className="border-t border-slate-100 my-1"></div>
                     <button 
@@ -121,12 +118,11 @@ const Navbar = () => {
             
             {user ? (
               <>
+                <Link to="/dashboard" onClick={closeMenu} className="block px-3 py-3 rounded-lg text-base font-medium text-slate-800 hover:bg-orange-50 hover:text-[var(--color-brand-primary)]">Dashboard</Link>
                 <Link to="/predict" onClick={closeMenu} className="block px-3 py-3 rounded-lg text-base font-medium text-slate-800 hover:bg-orange-50 hover:text-[var(--color-brand-primary)]">Predict Placement</Link>
-                <Link to="/chatbot" onClick={closeMenu} className="block px-3 py-3 rounded-lg text-base font-medium text-slate-800 hover:bg-orange-50 hover:text-[var(--color-brand-primary)]">AI Chatbot</Link>
                 <Link to="/resume" onClick={closeMenu} className="block px-3 py-3 rounded-lg text-base font-medium text-slate-800 hover:bg-orange-50 hover:text-[var(--color-brand-primary)]">Resume Analyzer</Link>
                 <div className="border-t border-slate-100 my-2"></div>
                 <Link to="/profile" onClick={closeMenu} className="block px-3 py-3 rounded-lg text-base font-medium text-slate-800 hover:bg-orange-50 hover:text-[var(--color-brand-primary)]">Profile Settings</Link>
-                <Link to="/predictions" onClick={closeMenu} className="block px-3 py-3 rounded-lg text-base font-medium text-slate-800 hover:bg-orange-50 hover:text-[var(--color-brand-primary)]">Prediction History</Link>
                 <button 
                   onClick={() => { logout(); closeMenu(); }}
                   className="block w-full text-left px-3 py-3 rounded-lg text-base font-medium text-red-600 hover:bg-red-50"

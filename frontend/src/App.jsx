@@ -11,13 +11,11 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+import DashboardPage from './pages/DashboardPage';
 import PredictionPage from './pages/PredictionPage';
 import PredictionResult from './pages/PredictionResult';
-import PredictionHistory from './pages/PredictionHistory';
 import ResumeUploadPage from './pages/ResumeUploadPage';
 import ResumeResultPage from './pages/ResumeResultPage';
-import ResumeListPage from './pages/ResumeListPage';
-import ChatbotPage from './pages/ChatbotPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
@@ -36,16 +34,13 @@ function App() {
               {/* Protected Routes */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
                 
                 <Route path="/predict" element={<PredictionPage />} />
                 <Route path="/prediction/result" element={<PredictionResult />} />
-                <Route path="/predictions" element={<PredictionHistory />} />
                 
                 <Route path="/resume" element={<ResumeUploadPage />} />
                 <Route path="/resume/result/:id" element={<ResumeResultPage />} />
-                <Route path="/resumes" element={<ResumeListPage />} />
-                
-                <Route path="/chatbot" element={<ChatbotPage />} />
               </Route>
 
               {/* 404 Route */}

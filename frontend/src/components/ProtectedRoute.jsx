@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
+import ChatbotWidget from './ChatbotWidget';
 
 const ProtectedRoute = () => {
   const { user, loading } = useContext(AuthContext);
@@ -18,7 +19,12 @@ const ProtectedRoute = () => {
     return <Navigate to="/login" replace />;
   }
 
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      <ChatbotWidget />
+    </>
+  );
 };
 
 export default ProtectedRoute;
