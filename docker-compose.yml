@@ -13,7 +13,21 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./dbschema.sql:/docker-entrypoint-initdb.d/init.sql
+      # - ./dbschema.sql:/docker-entrypoint-initdb.d/init.sql  # Not needed anymore as we use alembic
+
+  backend:
+    build: ./backend
+    container_name: local_fastapi_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ./backend/.env
+    environment:
+      # Override the DB URL to point to the docker container named 'db'
+      DATABASE_URL: postgresql://myuser:mypassword@db:5432/placement_db
 
 volumes:
   postgres_data:
