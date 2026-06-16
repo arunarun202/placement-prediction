@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Text
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
@@ -24,7 +24,7 @@ class UserPredictModel(Base):
     experience = Column(Float, nullable=False)
     round = Column(Integer, nullable=False)
     company_name = Column(String(100), nullable=False)
-    label = Column(String(100))
+    label = Column(Text)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="predictions")

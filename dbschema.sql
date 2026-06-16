@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS user_predict_models (
     experience DOUBLE PRECISION NOT NULL,
     round INTEGER NOT NULL,
     company_name VARCHAR(100) NOT NULL,
-    label VARCHAR(100),
+    label TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -15,8 +15,8 @@ const DashboardPage = () => {
     setLoading(true);
     try {
       const [predictionsRes, resumesRes] = await Promise.all([
-        api.get('/predict').catch(() => ({ data: [] })),
-        api.get('/resume').catch(() => ({ data: [] }))
+        api.get('/predict/').catch(() => ({ data: [] })),
+        api.get('/resume/').catch(() => ({ data: [] }))
       ]);
       setPredictions(predictionsRes.data);
       setResumes(resumesRes.data);
