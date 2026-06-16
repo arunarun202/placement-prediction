@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
       const tokens = localStorage.getItem('auth_tokens');
       if (tokens) {
         try {
-          const res = await api.get('/auth/user/');
+          const res = await api.get('/auth/me');
           setUser(res.data);
         } catch (error) {
           console.error("Failed to fetch user on load", error);
@@ -28,51 +28,63 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const res = await api.post('/auth/login/', { username, password });
-      localStorage.setItem('auth_tokens', JSON.stringify(res.data.tokens));
-      setUser(res.data.user);
+      const formData = new URLSearchParams();
+      formData.append('username', username);
+      formData.append('password', password);
+      
+      const res = await api.post('/auth/login', formData, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      });
+      
+      localStorage.setItem('auth_tokens', JSON.stringify({ access: res.data.access_token }));
+      
+      // Fetch user data after successful login
+      const userRes = await api.get('/auth/me');
+      setUser(userRes.data);
       return { success: true };
     } catch (error) {
       return { 
         success: false, 
-        error: error.response?.data?.error || 'Login failed. Please check your credentials.' 
+        error: error.response?.data?.detail || 'Login failed. Please check your credentials.' 
       };
     }
   };
 
   const register = async (userData) => {
     try {
-      const res = await api.post('/auth/register/', userData);
-      localStorage.setItem('auth_tokens', JSON.stringify(res.data.tokens));
-      setUser(res.data.user);
-      return { success: true };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || { general: ['Registration failed.'] } 
+      // Map frontend field names to backend schema
+      const payload = {
+        username: userData.username,
+        email: userData.email,
+        password: userData.password1, // backend expects 'password', frontend uses 'password1'
+        first_name: userData.first_name || '',
+        last_name: userData.last_name || '',
       };
+      await api.post('/auth/register', payload);
+      // Auto-login after successful registration
+      return await login(payload.username, payload.password);
+    } catch (error) {
+      const detail = error.response?.data?.detail;
+      let errorMsg = 'Registration failed.';
+      if (typeof detail === 'string') {
+        errorMsg = detail;
+      } else if (Array.isArray(detail)) {
+        // FastAPI 422 validation errors return an array of objects
+        errorMsg = detail.map(e => e.msg || JSON.stringify(e)).join('\n');
+      }
+      return { success: false, error: errorMsg };
     }
   };
 
   const logout = async () => {
-    try {
-      const tokens = localStorage.getItem('auth_tokens');
-      if (tokens) {
-        const parsedTokens = JSON.parse(tokens);
-        await api.post('/auth/logout/', { refresh: parsedTokens.refresh });
-      }
-    } catch (error) {
-      console.error("Logout error", error);
-    } finally {
-      localStorage.removeItem('auth_tokens');
-      setUser(null);
-      window.location.href = '/login';
-    }
+    localStorage.removeItem('auth_tokens');
+    setUser(null);
+    window.location.href = '/login';
   };
 
   const updateProfile = async (formData) => {
     try {
-      const res = await api.put('/profile/', formData, {
+      const res = await api.put('/profile', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -82,7 +94,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       return { 
         success: false, 
-        error: error.response?.data || 'Failed to update profile' 
+        error: error.response?.data?.detail || 'Failed to update profile' 
       };
     }
   };

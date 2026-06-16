@@ -84,3 +84,47 @@ def read_resumes(
         ResumeUpload.user_id == current_user.id
     ).offset(skip).limit(limit).all()
     return resumes
+
+@router.get("/{id}", response_model=ResumeResponse)
+def read_resume(
+    id: int,
+    db: Session = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_user),
+) -> Any:
+    """
+    Get a specific resume by ID.
+    """
+    resume = db.query(ResumeUpload).filter(
+        ResumeUpload.id == id,
+        ResumeUpload.user_id == current_user.id
+    ).first()
+    if not resume:
+        raise HTTPException(status_code=404, detail="Resume not found")
+    return resume
+
+@router.delete("/{id}")
+def delete_resume(
+    id: int,
+    db: Session = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_user),
+) -> Any:
+    """
+    Delete a specific resume by ID.
+    """
+    resume = db.query(ResumeUpload).filter(
+        ResumeUpload.id == id,
+        ResumeUpload.user_id == current_user.id
+    ).first()
+    if not resume:
+        raise HTTPException(status_code=404, detail="Resume not found")
+    
+    # Optionally delete the physical file
+    if resume.file and os.path.exists(resume.file):
+        try:
+            os.remove(resume.file)
+        except OSError:
+            pass
+            
+    db.delete(resume)
+    db.commit()
+    return {"success": True}

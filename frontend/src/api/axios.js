@@ -13,7 +13,9 @@ api.interceptors.request.use(
     const tokens = localStorage.getItem('auth_tokens');
     if (tokens) {
       const parsedTokens = JSON.parse(tokens);
-      config.headers.Authorization = `Bearer ${parsedTokens.access}`;
+      if (parsedTokens.access) {
+        config.headers.Authorization = `Bearer ${parsedTokens.access}`;
+      }
     }
     return config;
   },
@@ -23,41 +25,13 @@ api.interceptors.request.use(
 // Response interceptor to handle token refresh
 api.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-
-    // If the error status is 401 and there is no originalRequest._retry flag,
-    // it means the token has expired and we need to refresh it
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const tokens = localStorage.getItem('auth_tokens');
-
-      if (tokens) {
-        const parsedTokens = JSON.parse(tokens);
-        try {
-          const response = await axios.post('/api/auth/refresh/', {
-            refresh: parsedTokens.refresh,
-          });
-
-          // Store the new tokens
-          const newTokens = {
-            ...parsedTokens,
-            access: response.data.access,
-          };
-          localStorage.setItem('auth_tokens', JSON.stringify(newTokens));
-
-          // Update the authorization header for the original request
-          api.defaults.headers.common['Authorization'] = `Bearer ${newTokens.access}`;
-          originalRequest.headers['Authorization'] = `Bearer ${newTokens.access}`;
-
-          // Retry the original request
-          return api(originalRequest);
-        } catch (refreshError) {
-          // If refresh fails, log out
-          localStorage.removeItem('auth_tokens');
-          window.location.href = '/login';
-          return Promise.reject(refreshError);
-        }
+  (error) => {
+    // If the error status is 401, the token has expired or is invalid
+    if (error.response && error.response.status === 401) {
+      // Avoid redirecting if we are already on the login page or trying to login
+      if (window.location.pathname !== '/login' && !error.config.url.includes('/auth/login')) {
+        localStorage.removeItem('auth_tokens');
+        window.location.href = '/login';
       }
     }
     return Promise.reject(error);

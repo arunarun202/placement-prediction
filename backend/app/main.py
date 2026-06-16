@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.api import auth, predict, resume, chat
+from app.api import auth, predict, resume, chat, profile
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -24,6 +24,7 @@ app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(predict.router, prefix="/predict", tags=["predict"])
 app.include_router(resume.router, prefix="/resume", tags=["resume"])
 app.include_router(chat.router, prefix="/chat", tags=["chat"])
+app.include_router(profile.router, prefix="/profile", tags=["profile"])
 
 @app.get("/")
 def root():

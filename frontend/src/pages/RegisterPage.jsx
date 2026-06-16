@@ -54,9 +54,7 @@ const RegisterPage = () => {
       toast.success('Registration successful! Welcome.');
       navigate('/');
     } else {
-      // Handle generic errors from DRF
-      const errMsgs = Object.values(result.error).flat().join('\n');
-      toast.error(errMsgs || 'Registration failed');
+      toast.error(result.error || 'Registration failed');
     }
   };
 

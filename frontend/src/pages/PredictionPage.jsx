@@ -16,21 +16,21 @@ const PredictionPage = () => {
   const [loading, setLoading] = useState(false);
   
   const [formData, setFormData] = useState({
-    Age: '',
-    Gender: '',
-    Qualification: '',
+    age: '',
+    gender: '',
+    qualification: '',
     year: '',
     cgpa: '',
-    Post_Graduation: '',
-    ten_Percentage: '',
-    twelth_Percentage: '',
-    Job_Role: '',
-    Salary: '',
-    Soft_Skills: '',
-    Internship: '',
-    Experience: '',
-    Round: '',
-    Company_Name: ''
+    post_graduation: '',
+    ten_percentage: '',
+    twelth_percentage: '',
+    job_role: '',
+    salary: '',
+    soft_skills: '',
+    internship: '',
+    experience: '',
+    round: '',
+    company_name: ''
   });
 
   const handleChange = (e) => {
@@ -42,7 +42,19 @@ const PredictionPage = () => {
     setLoading(true);
     
     try {
-      const response = await api.post('/predict/', formData);
+      // Convert string values to proper numeric types for the backend
+      const payload = {
+        ...formData,
+        age: parseFloat(formData.age),
+        year: parseFloat(formData.year),
+        cgpa: parseFloat(formData.cgpa),
+        ten_percentage: parseFloat(formData.ten_percentage),
+        twelth_percentage: parseFloat(formData.twelth_percentage),
+        salary: parseFloat(formData.salary),
+        experience: parseFloat(formData.experience),
+        round: parseInt(formData.round),
+      };
+      const response = await api.post('/predict/', payload);
       // Navigate to result page with the data
       navigate('/prediction/result', { state: { result: response.data } });
     } catch (error) {
@@ -96,7 +108,7 @@ const PredictionPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
                     <FaBirthdayCake className="text-slate-400" /> Age
                   </label>
-                  <input type="number" name="Age" min="18" required value={formData.Age} onChange={handleChange}
+                  <input type="number" name="age" min="18" required value={formData.age} onChange={handleChange}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[var(--color-brand-primary)] focus:border-transparent outline-none transition-all" />
                 </div>
                 
@@ -104,7 +116,7 @@ const PredictionPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
                     <FaVenusMars className="text-slate-400" /> Gender
                   </label>
-                  <select name="Gender" required value={formData.Gender} onChange={handleChange}
+                  <select name="gender" required value={formData.gender} onChange={handleChange}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[var(--color-brand-primary)] focus:border-transparent outline-none transition-all">
                     <option value="" disabled>Select Gender</option>
                     <option value="0">Male</option>
@@ -116,7 +128,7 @@ const PredictionPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
                     <FaGraduationCap className="text-slate-400" /> Qualification
                   </label>
-                  <select name="Qualification" required value={formData.Qualification} onChange={handleChange}
+                  <select name="qualification" required value={formData.qualification} onChange={handleChange}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[var(--color-brand-primary)] focus:border-transparent outline-none transition-all">
                     <option value="" disabled>Select Qualification</option>
                     <option value="0">B.TECH</option>
@@ -151,7 +163,7 @@ const PredictionPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
                     <FaGraduationCap className="text-slate-400" /> Post Graduation
                   </label>
-                  <select name="Post_Graduation" required value={formData.Post_Graduation} onChange={handleChange}
+                  <select name="post_graduation" required value={formData.post_graduation} onChange={handleChange}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[var(--color-brand-primary)] focus:border-transparent outline-none transition-all">
                     <option value="" disabled>Select PG</option>
                     <option value="0">No</option>
@@ -163,7 +175,7 @@ const PredictionPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
                     <FaSchool className="text-slate-400" /> 10th Percentage
                   </label>
-                  <input type="number" step="0.01" name="ten_Percentage" min="0" max="100" placeholder="0 - 100" required value={formData.ten_Percentage} onChange={handleChange}
+                  <input type="number" step="0.01" name="ten_percentage" min="0" max="100" placeholder="0 - 100" required value={formData.ten_percentage} onChange={handleChange}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[var(--color-brand-primary)] focus:border-transparent outline-none transition-all" />
                 </div>
                 
@@ -171,7 +183,7 @@ const PredictionPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
                     <FaUniversity className="text-slate-400" /> 12th Percentage
                   </label>
-                  <input type="number" step="0.01" name="twelth_Percentage" min="0" max="100" placeholder="0 - 100" required value={formData.twelth_Percentage} onChange={handleChange}
+                  <input type="number" step="0.01" name="twelth_percentage" min="0" max="100" placeholder="0 - 100" required value={formData.twelth_percentage} onChange={handleChange}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[var(--color-brand-primary)] focus:border-transparent outline-none transition-all" />
                 </div>
               </div>
@@ -188,7 +200,7 @@ const PredictionPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
                     <FaCode className="text-slate-400" /> Job Role
                   </label>
-                  <select name="Job_Role" required value={formData.Job_Role} onChange={handleChange}
+                  <select name="job_role" required value={formData.job_role} onChange={handleChange}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[var(--color-brand-primary)] focus:border-transparent outline-none transition-all">
                     <option value="" disabled>Select Job Role</option>
                     <option value="0">Android Studio</option>
@@ -209,7 +221,7 @@ const PredictionPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
                     <FaMoneyBillWave className="text-slate-400" /> Expected Salary (₹)
                   </label>
-                  <input type="number" name="Salary" min="0" required value={formData.Salary} onChange={handleChange}
+                  <input type="number" name="salary" min="0" required value={formData.salary} onChange={handleChange}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[var(--color-brand-primary)] focus:border-transparent outline-none transition-all" />
                 </div>
                 
@@ -217,7 +229,7 @@ const PredictionPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
                     <FaComments className="text-slate-400" /> Soft Skills
                   </label>
-                  <select name="Soft_Skills" required value={formData.Soft_Skills} onChange={handleChange}
+                  <select name="soft_skills" required value={formData.soft_skills} onChange={handleChange}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[var(--color-brand-primary)] focus:border-transparent outline-none transition-all">
                     <option value="" disabled>Select Soft Skill</option>
                     <option value="0">Adaptability</option>
@@ -235,7 +247,7 @@ const PredictionPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
                     <FaBriefcase className="text-slate-400" /> Internship
                   </label>
-                  <select name="Internship" required value={formData.Internship} onChange={handleChange}
+                  <select name="internship" required value={formData.internship} onChange={handleChange}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[var(--color-brand-primary)] focus:border-transparent outline-none transition-all">
                     <option value="" disabled>Select Internship</option>
                     <option value="0">No</option>
@@ -247,7 +259,7 @@ const PredictionPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
                     <FaHistory className="text-slate-400" /> Experience
                   </label>
-                  <select name="Experience" required value={formData.Experience} onChange={handleChange}
+                  <select name="experience" required value={formData.experience} onChange={handleChange}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[var(--color-brand-primary)] focus:border-transparent outline-none transition-all">
                     <option value="" disabled>Select Experience</option>
                     <option value="0">No</option>
@@ -259,7 +271,7 @@ const PredictionPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
                     <FaLayerGroup className="text-slate-400" /> Interview Rounds
                   </label>
-                  <input type="number" name="Round" min="1" max="10" required value={formData.Round} onChange={handleChange}
+                  <input type="number" name="round" min="1" max="10" required value={formData.round} onChange={handleChange}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[var(--color-brand-primary)] focus:border-transparent outline-none transition-all" />
                 </div>
                 
@@ -267,7 +279,7 @@ const PredictionPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
                     <FaBuilding className="text-slate-400" /> Target Company
                   </label>
-                  <select name="Company_Name" required value={formData.Company_Name} onChange={handleChange}
+                  <select name="company_name" required value={formData.company_name} onChange={handleChange}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[var(--color-brand-primary)] focus:border-transparent outline-none transition-all">
                     <option value="" disabled>Select Company</option>
                     <option value="0">Accenture India</option>

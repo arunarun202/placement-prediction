@@ -15,8 +15,8 @@ const DashboardPage = () => {
     setLoading(true);
     try {
       const [predictionsRes, resumesRes] = await Promise.all([
-        api.get('/predictions/').catch(() => ({ data: [] })),
-        api.get('/resumes/').catch(() => ({ data: [] }))
+        api.get('/predict').catch(() => ({ data: [] })),
+        api.get('/resume').catch(() => ({ data: [] }))
       ]);
       setPredictions(predictionsRes.data);
       setResumes(resumesRes.data);
@@ -35,7 +35,7 @@ const DashboardPage = () => {
   const handleDeleteResume = async (id) => {
     if (window.confirm("Are you sure you want to delete this resume analysis?")) {
       try {
-        await api.delete(`/resume/${id}/delete/`);
+        await api.delete(`/resume/${id}`);
         toast.success('Resume deleted successfully');
         fetchDashboardData();
       } catch (error) {
@@ -119,7 +119,7 @@ const DashboardPage = () => {
                       <th className="px-6 py-4">Date & Time</th>
                       <th className="px-6 py-4">Target Role</th>
                       <th className="px-6 py-4">Company</th>
-                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4">Prediction</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -129,19 +129,15 @@ const DashboardPage = () => {
                           {formatDate(pred.created_at)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
-                          {['Android Studio', 'C', 'C++', 'Data Analytics', 'Data Science', 'Frontend', 'Full Stack', 'Java', 'Node JS', 'Python', 'React'][pred.Job_Role] || pred.Job_Role}
+                          {pred.job_role}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
-                          {['Accenture', 'Amazon', 'Amul', 'Asian Paints', 'Axis Bank', 'Bajaj', 'BigBasket', 'Bosch', 'Byjus', 'Capgemini', 'Cognizant'][Math.min(pred.Company_Name, 10)] || pred.Company_Name}
+                          {pred.company_name}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
-                            pred.label.toLowerCase() === 'yes' 
-                              ? 'bg-green-100 text-green-700' 
-                              : 'bg-red-100 text-red-700'
-                          }`}>
-                            {pred.label.toLowerCase() === 'yes' ? <FaCheckCircle /> : <FaExclamationTriangle />}
-                            {pred.label.toUpperCase()}
+                        <td className="px-6 py-4">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 max-w-[200px] truncate" title={pred.label}>
+                            <FaCheckCircle />
+                            {pred.label ? (pred.label.length > 30 ? pred.label.substring(0, 30) + '...' : pred.label) : 'Pending'}
                           </span>
                         </td>
                       </tr>

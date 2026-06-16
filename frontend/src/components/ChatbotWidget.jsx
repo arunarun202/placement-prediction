@@ -33,8 +33,16 @@ const ChatbotWidget = () => {
     setLoading(true);
 
     try {
-      const response = await api.post('/chatbot/', { question: userMessage.text });
-      const botMessage = { id: Date.now() + 1, text: response.data.response, sender: 'bot' };
+      // Build history from previous user messages for context
+      const history = messages
+        .filter(m => m.sender === 'user')
+        .map(m => m.text);
+
+      const response = await api.post('/chat/', { 
+        message: userMessage.text,
+        history: history
+      });
+      const botMessage = { id: Date.now() + 1, text: response.data.message, sender: 'bot' };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error(error);

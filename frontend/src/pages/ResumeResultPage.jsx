@@ -14,7 +14,7 @@ const ResumeResultPage = () => {
   useEffect(() => {
     const fetchResult = async () => {
       try {
-        const response = await api.get(`/resume/${id}/`);
+        const response = await api.get(`/resume/${id}`);
         setResult(response.data);
       } catch (error) {
         toast.error('Failed to load resume analysis');
@@ -45,8 +45,20 @@ const ResumeResultPage = () => {
     );
   }
 
-  const { resume, ats_score, suggestions, course_recommendations, roles } = result;
-  
+  // Backend returns flat ResumeResponse: ats_score, suggestions (string), course_products, alternative_roles, role_courses
+  const ats_score = result.ats_score || 0;
+  const suggestionsText = result.suggestions || '';
+  // Split suggestions string into array for display (split by newline or period-based sentences)
+  const suggestionsList = suggestionsText
+    .split(/\n|(?<=\.)\s+/)
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+  const course_products = result.course_products || [];
+  const role_courses = result.role_courses || [];
+  const alternative_roles = result.alternative_roles || [];
+  // Combine course_products and role_courses for display
+  const allCourses = [...new Set([...course_products, ...role_courses])];
+
   // Determine score color
   const getScoreColor = (score) => {
     if (score >= 80) return 'text-green-500 stroke-green-500';
@@ -64,8 +76,8 @@ const ResumeResultPage = () => {
     <div className="min-h-screen bg-slate-50 pt-10 pb-20">
       <div className="max-w-6xl mx-auto px-4">
         <div className="mb-8">
-          <Link to="/resumes" className="text-slate-500 hover:text-[var(--color-brand-primary)] flex items-center gap-2 transition-colors w-max">
-            <FaArrowLeft /> Back to Resumes
+          <Link to="/dashboard" className="text-slate-500 hover:text-[var(--color-brand-primary)] flex items-center gap-2 transition-colors w-max">
+            <FaArrowLeft /> Back to Dashboard
           </Link>
         </div>
 
@@ -112,7 +124,8 @@ const ResumeResultPage = () => {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h2 className="text-2xl font-bold text-slate-800 mb-1">Resume Details</h2>
-                <p className="text-slate-500">Target Role: <span className="font-semibold text-slate-700">{resume.job_role}</span></p>
+                <p className="text-slate-500">Applicant: <span className="font-semibold text-slate-700">{result.name}</span></p>
+                <p className="text-slate-500">Target Role: <span className="font-semibold text-slate-700">{result.job_role}</span></p>
               </div>
               <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-[var(--color-brand-primary)]">
                 <FaFilePdf className="text-2xl" />
@@ -124,17 +137,20 @@ const ResumeResultPage = () => {
                 <h3 className="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
                   <FaLightbulb className="text-yellow-500" /> Key Suggestions
                 </h3>
-                <ul className="space-y-3">
-                  {suggestions.slice(0, 5).map((suggestion, index) => (
-                    <li key={index} className="flex items-start gap-3 text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                      <span className="text-[var(--color-brand-primary)] mt-1">•</span>
-                      <span>{suggestion}</span>
-                    </li>
-                  ))}
-                  {suggestions.length === 0 && (
-                    <p className="text-slate-500 italic">No specific suggestions available.</p>
-                  )}
-                </ul>
+                {suggestionsList.length > 0 ? (
+                  <ul className="space-y-3">
+                    {suggestionsList.slice(0, 5).map((suggestion, index) => (
+                      <li key={index} className="flex items-start gap-3 text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span className="text-[var(--color-brand-primary)] mt-1">•</span>
+                        <span>{suggestion}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100 whitespace-pre-wrap">
+                    {suggestionsText || 'No specific suggestions available.'}
+                  </p>
+                )}
               </div>
             </div>
           </motion.div>
@@ -155,12 +171,12 @@ const ResumeResultPage = () => {
             </h3>
             
             <div className="flex flex-wrap gap-3">
-              {roles.map((role, index) => (
+              {alternative_roles.map((role, index) => (
                 <div key={index} className="bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2 rounded-full font-medium hover:bg-orange-50 hover:text-[var(--color-brand-primary)] hover:border-orange-200 transition-colors cursor-pointer">
                   {role}
                 </div>
               ))}
-              {roles.length === 0 && (
+              {alternative_roles.length === 0 && (
                 <p className="text-slate-500">No alternative roles generated.</p>
               )}
             </div>
@@ -179,7 +195,7 @@ const ResumeResultPage = () => {
             </h3>
             
             <div className="space-y-4">
-              {course_recommendations.map((course, index) => (
+              {allCourses.map((course, index) => (
                 <div key={index} className="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-100 hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center shrink-0">
@@ -187,12 +203,9 @@ const ResumeResultPage = () => {
                     </div>
                     <span className="font-semibold text-slate-700">{course}</span>
                   </div>
-                  <button className="text-[var(--color-brand-primary)] font-medium text-sm hover:underline whitespace-nowrap ml-4">
-                    View Course
-                  </button>
                 </div>
               ))}
-              {course_recommendations.length === 0 && (
+              {allCourses.length === 0 && (
                 <p className="text-slate-500">No courses recommended.</p>
               )}
             </div>
@@ -204,3 +217,4 @@ const ResumeResultPage = () => {
 };
 
 export default ResumeResultPage;
+

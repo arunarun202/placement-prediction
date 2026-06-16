@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import ChatbotWidget from './components/ChatbotWidget';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -50,6 +51,7 @@ function App() {
           <Footer />
         </div>
         <Toaster position="top-right" />
+        <ChatbotWidget />
       </Router>
     </AuthProvider>
   );
